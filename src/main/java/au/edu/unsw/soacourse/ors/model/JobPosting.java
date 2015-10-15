@@ -1,5 +1,8 @@
 package au.edu.unsw.soacourse.ors.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class JobPosting {
 	
 	private String jobId;
