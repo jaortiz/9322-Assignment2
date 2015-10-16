@@ -1,11 +1,16 @@
 package au.edu.unsw.soacourse.ors;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -13,7 +18,13 @@ import javax.ws.rs.core.UriInfo;
 
 import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
-
+/**
+ * NEED TO DO:
+ * updating a job posting
+ * Searching a job posting
+ * Archiving a job posting
+ *
+ */
 
 @Path("/jobPostings")
 public class JobPostingsService {
@@ -24,32 +35,41 @@ public class JobPostingsService {
 	@Context
 	Request request;
 	
-    // POST to create a book - FIX THIS
 	@POST
 	@Path("createJobPosting")
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public void newJob(
-			@FormParam("jobName") String jobName,
-			@FormParam("closingDate") String closingDate,
-			@FormParam("salary") String salary,
-			@FormParam("position") String position,
-			@FormParam("location") String location,
-			@FormParam("description") String description
-	) throws IOException {
-		JobPosting job = new JobPosting();
-	
-		job.setJobName(jobName);
-		job.setCloseDate(closingDate);
-		job.setSalaryRate(Integer.parseInt(salary));
-		job.setPositionType(position);
-		job.setLocation(location);
-		job.setDescription(description);
+    @Consumes("application/json")
+	public void newJob(JobPosting newJob) throws IOException {
 		
 		JobsDAOImpl jobsDAO = new JobsDAOImpl();
 		
-		jobsDAO.createJob(job);
+		int jobId = jobsDAO.createJob(newJob);
 		
 		
-		//TODO: Fix here so that it returns the new book
+		//TODO: Return the newly generated job
 	}
+	
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JobPosting> getAllJobs() throws IOException {
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		
+		List<JobPosting> jobsList = jobsDAO.getAllJobs();
+		return jobsList;
+	}
+	
+	@GET
+	@Path("{jobID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JobPosting getJobById(@PathParam("jobID") String idString) throws IOException {
+		int jobID = Integer.parseInt(idString);
+		
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		JobPosting job = jobsDAO.getJobById(jobID);
+		
+		return job;
+		
+	}	
+	
+	
+	
 }

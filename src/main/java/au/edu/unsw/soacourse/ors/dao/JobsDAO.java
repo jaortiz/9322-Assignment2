@@ -14,14 +14,14 @@ public interface JobsDAO {
 	 * Creates the job in the database
 	 * @param job the jobModel to insert
 	 */
-	void createJob (JobPosting job); 
+	int createJob (JobPosting job); 
 	
 	/**
 	 * Retrieves a job posting from the database
 	 * @param JobID the id of the job to recieve
 	 * @return the JobPosting
 	 */
-	JobPosting getJobById (int JobID);
+	JobPosting getJobById (int jobID);
 	
 	/**
 	 * Retrieves all the jobs from the database that arent archived

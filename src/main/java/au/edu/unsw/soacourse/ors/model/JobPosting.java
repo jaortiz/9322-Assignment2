@@ -7,9 +7,9 @@ public class JobPosting {
 	
 	private int jobId;
 	private String jobName;
-	private String closeDate;
-	private int salaryRate;
-	private String positionType;
+	private String closingDate;
+	private int salary;
+	private String position;
 	private String location;
 	private String description;
 	private String status;
@@ -33,28 +33,28 @@ public class JobPosting {
 		this.jobName = jobName;
 	}
 	
-	public String getCloseDate() {
-		return closeDate;
+	public String getClosingDate() {
+		return closingDate;
 	}
 	
-	public void setCloseDate(String closeDate) {
-		this.closeDate = closeDate;
+	public void setClosingDate(String closingDate) {
+		this.closingDate = closingDate;
 	}
 	
-	public int getSalaryRate() {
-		return salaryRate;
+	public int getSalary() {
+		return salary;
 	}
 	
-	public void setSalaryRate(int salaryRate) {
-		this.salaryRate = salaryRate;
+	public void setSalary(int salary) {
+		this.salary = salary;
 	}
 	
-	public String getPositionType() {
-		return positionType;
+	public String getPosition() {
+		return position;
 	}
 	
-	public void setPositionType(String positionType) {
-		this.positionType = positionType;
+	public void setPosition(String positionType) {
+		this.position = positionType;
 	}
 	
 	public String getLocation() {
