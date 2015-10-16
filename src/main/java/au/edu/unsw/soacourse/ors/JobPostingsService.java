@@ -20,9 +20,11 @@ import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
 /**
  * NEED TO DO:
+ * create job - return something
  * updating a job posting
- * Searching a job posting
- * Archiving a job posting
+ * Searching a job posting 
+ * Archiving a job posting - restrict to manager
+ * ALSO NEED TO TEST
  *
  */
 
@@ -68,8 +70,42 @@ public class JobPostingsService {
 		
 		return job;
 		
-	}	
+	}
 	
+	
+	@DELETE
+	@Path("deleteJob/{jobid}")
+	public void deleteBook(@PathParam("jobid") String idString) {
+		int jobID = Integer.parseInt(idString);
+		
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		jobsDAO.setUpDatabase();
+		jobsDAO.archiveJob(jobID);
+		
+	}
+	
+	@GET
+	@Path("archivedJobs")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JobPosting> getAllArchivedJobs() throws IOException {
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		
+		List<JobPosting> jobsList = jobsDAO.getAllArchivedJobs();
+		return jobsList;
+	}
+	
+	@GET
+	@Path("archivedJobs/{jobID}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public JobPosting getArchivedJobById(@PathParam("jobID") String idString) throws IOException {
+		int jobID = Integer.parseInt(idString);
+		
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		JobPosting job = jobsDAO.getArchivedJobById(jobID);
+		
+		return job;
+		
+	}
 	
 	
 }

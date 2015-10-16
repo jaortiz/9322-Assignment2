@@ -12,6 +12,47 @@ public class JobsDAOImpl implements JobsDAO {
 	public JobsDAOImpl() {
 	}
 	
+	public void setUpDatabase () {
+		Connection c = null;
+	    Statement stmt = null;
+	    try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      System.out.println("Opened database successfully");
+
+	      stmt = c.createStatement();
+	      String sql = "CREATE TABLE IF NOT EXISTS JOBPOSTINGS " +
+	                   "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
+	                   " JOBNAME           	TEXT    NOT NULL, " + 
+	                   " CLOSEDATE			TEXT, " + 
+	                   " SALARY				REAL, " + 
+	                   " POSITIONTYPE		TEXT, " +
+	                   " LOCATION			TEXT, " + 
+	                   " DESCRIPTION		TEXT, "	+ 
+	                   " STATUS				TEXT)"; 
+	      stmt.executeUpdate(sql);
+	      System.out.println("Job Postings Table created successfully");
+	      
+	      sql = "CREATE TABLE IF NOT EXISTS ARCHIVEDJOBS " +
+                  "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
+                  " JOBNAME           	TEXT    NOT NULL, " + 
+                  " CLOSEDATE			TEXT, " + 
+                  " SALARY				REAL, " + 
+                  " POSITIONTYPE		TEXT, " +
+                  " LOCATION			TEXT, " + 
+                  " DESCRIPTION			TEXT, "	+ 
+                  " STATUS				TEXT)";
+	      stmt.executeUpdate(sql);
+	      System.out.println("Archived jobs Table created successfully");
+	      stmt.close();
+	      c.close();
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    
+	}
+	
 	@Override
 	public int createJob(JobPosting job) {
 		Connection c = null;
@@ -164,9 +205,137 @@ public class JobsDAOImpl implements JobsDAO {
 	}
 
 	@Override
-	public void archiveJob(int JobID) {
-		// TODO Auto-generated method stub
+	public void archiveJob(int jobID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		JobPosting job = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM JOBPOSTINGS WHERE ID = ? "); 
+		    stmt.setInt(1, jobID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    rs.next();
+		    job = new JobPosting();
+			job.setJobId(rs.getInt("ID"));
+			job.setJobName(rs.getString("JOBNAME"));
+			job.setClosingDate(rs.getString("CLOSEDATE"));
+			job.setSalary(rs.getInt("SALARY"));
+			job.setPosition(rs.getString("POSITIONTYPE"));
+			job.setLocation(rs.getString("LOCATION"));
+			job.setDescription(rs.getString("DESCRIPTION"));
+			job.setStatus(rs.getString("STATUS"));
+			rs.close();
+		    
+			stmt = c.prepareStatement("INSERT INTO ARCHIVEDJOBS (JOBNAME, CLOSEDATE, " +
+			    	"SALARY, POSITIONTYPE, LOCATION, DESCRIPTION, STATUS) " +
+			    	"VALUES (?,?,?,?,?,?,?);"); 
+		    stmt.setString(1, job.getJobName());
+		    stmt.setString(2, job.getClosingDate());
+		    stmt.setInt(3, job.getSalary());
+		    stmt.setString(4, job.getPosition());
+		    stmt.setString(5, job.getLocation());
+		    stmt.setString(6, job.getDescription());
+		    stmt.setString(7, job.getStatus());
+			stmt.executeUpdate();
+			
+			c.commit();
+			
+			stmt = c.prepareStatement("DELETE FROM JOBPOSTINGS WHERE ID = ? "); 
+		    stmt.setInt(1, job.getJobId());
+		    stmt.executeUpdate();
+			c.commit();
+			
+			stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
 
+	}
+	
+	@Override
+	public JobPosting getArchivedJobById (int jobID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		JobPosting job = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM ARCHIVEDJOBS WHERE ID = ? "); 
+		    stmt.setInt(1, jobID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    rs.next();
+		    job = new JobPosting();
+			job.setJobId(rs.getInt("ID"));
+			job.setJobName(rs.getString("JOBNAME"));
+			job.setClosingDate(rs.getString("CLOSEDATE"));
+			job.setSalary(rs.getInt("SALARY"));
+			job.setPosition(rs.getString("POSITIONTYPE"));
+			job.setLocation(rs.getString("LOCATION"));
+			job.setDescription(rs.getString("DESCRIPTION"));
+			job.setStatus(rs.getString("STATUS"));
+			
+			
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return job;
+	}
+	
+	@Override
+	public List<JobPosting> getAllArchivedJobs() {
+		Connection c = null;
+		Statement stmt = null;
+		List<JobPosting> jobList = new ArrayList<JobPosting>();
+		JobPosting job = null;
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	      
+	      stmt = c.createStatement();
+	      ResultSet rs = stmt.executeQuery( "SELECT * FROM ARCHIVEDJOBS;" );
+	      while ( rs.next() ) {
+	    	  job = new JobPosting();
+	          job.setJobId(rs.getInt("ID"));
+	          job.setJobName(rs.getString("JOBNAME"));
+	          job.setClosingDate(rs.getString("CLOSEDATE"));
+	          job.setSalary(rs.getInt("SALARY"));
+	          job.setPosition(rs.getString("POSITIONTYPE"));
+	          job.setLocation(rs.getString("LOCATION"));
+	          job.setDescription(rs.getString("DESCRIPTION"));
+	          job.setStatus(rs.getString("STATUS"));
+	          
+	          jobList.add(job);
+	      }
+	      rs.close() ;
+	      stmt.close();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return jobList;
 	}
 
 }

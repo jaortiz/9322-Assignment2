@@ -46,5 +46,19 @@ public interface JobsDAO {
 	 * Archives the job
 	 * @param JobID the job to archive
 	 */
-	void archiveJob (int JobID);
+	void archiveJob (int jobID);
+	
+	/**
+	 * Retrieves a job posting from the database
+	 * @param JobID the id of the job to recieve
+	 * @return the JobPosting
+	 */
+	JobPosting getArchivedJobById (int jobID);
+	
+	/**
+	 * Retrieves all the jobs from the database that arent archived
+	 * @return all unarchived jobs
+	 */
+	List<JobPosting> getAllArchivedJobs ();
+	
 }
