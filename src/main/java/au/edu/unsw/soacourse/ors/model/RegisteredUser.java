@@ -15,6 +15,7 @@ public class RegisteredUser {
 	private String firstName;
 	private String role;
 	private String department;
+	
 	public String getuId() {
 		return uId;
 	}

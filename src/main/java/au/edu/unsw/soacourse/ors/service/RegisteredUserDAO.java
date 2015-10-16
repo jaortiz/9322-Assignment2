@@ -21,7 +21,7 @@ public class RegisteredUserDAO {
 private List<RegisteredUser> registeredUsers = new ArrayList<RegisteredUser>();
 	
 	public RegisteredUserDAO() {
-		System.out.println("initialisng");
+		//System.out.println("initialisng");
 		registeredUsers = createRegisteredUsers();
 	}
 	
@@ -29,7 +29,7 @@ private List<RegisteredUser> registeredUsers = new ArrayList<RegisteredUser>();
 		
 		NodeList nodes = readRegisteredUsers();	//get the nodes from the xml file i.e. all the entry nodes
 		
-		System.out.println("No Nodes:" + nodes.getLength());
+		//System.out.println("No Nodes:" + nodes.getLength());
 		
 		for(int i = 0;i < nodes.getLength();i++) {
 			Node node = nodes.item(i);

@@ -20,7 +20,7 @@ public class RegisteredUserService {
 	private RegisteredUserDAO registeredUserDAO;
 	
 	@GET
-	@Path("size")
+	@Path("/size")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCount() {
 		int size = registeredUserDAO.getUsers().size();
