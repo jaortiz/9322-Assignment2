@@ -5,7 +5,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class JobPosting {
 	
-	private String jobId;
+	private int jobId;
+	private String jobName;
 	private String closeDate;
 	private int salaryRate;
 	private String positionType;
@@ -13,12 +14,20 @@ public class JobPosting {
 	private String description;
 	private String status;
 	
-	public String getJobId() {
+	public int getJobId() {
 		return jobId;
 	}
 	
-	public void setJobId(String jobId) {
+	public void setJobId(int jobId) {
 		this.jobId = jobId;
+	}
+	
+	public String getJobName() {
+		return jobName;
+	}
+	
+	public void setJobName (String jobName) {
+		this.jobName = jobName;
 	}
 	
 	public String getCloseDate() {
