@@ -14,6 +14,9 @@ public class JobPosting {
 	private String description;
 	private String status;
 	
+	public JobPosting() {
+	}
+	
 	public int getJobId() {
 		return jobId;
 	}

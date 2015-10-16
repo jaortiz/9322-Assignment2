@@ -11,6 +11,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
+import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
+import au.edu.unsw.soacourse.ors.model.JobPosting;
+
+
 @Path("/jobPostings")
 public class JobPostingsService {
 	// Allows to insert contextual objects into the class, 
@@ -22,6 +26,7 @@ public class JobPostingsService {
 	
     // POST to create a book - FIX THIS
 	@POST
+	@Path("createJobPosting")
 	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
 	public void newJob(
 			@FormParam("jobName") String jobName,
@@ -31,6 +36,20 @@ public class JobPostingsService {
 			@FormParam("location") String location,
 			@FormParam("description") String description
 	) throws IOException {
+		JobPosting job = new JobPosting();
+	
+		job.setJobName(jobName);
+		job.setCloseDate(closingDate);
+		job.setSalaryRate(Integer.parseInt(salary));
+		job.setPositionType(position);
+		job.setLocation(location);
+		job.setDescription(description);
 		
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		
+		jobsDAO.createJob(job);
+		
+		
+		//TODO: Fix here so that it returns the new book
 	}
 }
