@@ -19,6 +19,7 @@ public class RegisteredUserService {
 	@Autowired
 	private RegisteredUserDAO registeredUserDAO;
 	
+	
 	@GET
 	@Path("/size")
 	@Produces(MediaType.TEXT_PLAIN)

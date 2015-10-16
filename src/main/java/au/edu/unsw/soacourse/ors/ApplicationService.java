@@ -21,7 +21,7 @@ public class ApplicationService {
 	
 	@Autowired
 	private ApplicationDAO applicationDAO;
-	
+
 	
 	//Need to implement produces and consumes
 	@POST

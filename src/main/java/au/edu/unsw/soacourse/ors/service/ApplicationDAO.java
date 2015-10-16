@@ -25,4 +25,8 @@ public class ApplicationDAO {
 		return null;
 	}
 	
+	public List<Application> getApplications() {
+		return applications;
+	}
+	
 }
