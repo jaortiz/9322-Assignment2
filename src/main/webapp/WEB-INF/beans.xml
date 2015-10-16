@@ -8,6 +8,7 @@
     <jaxrs:server id="services" address="/">
         <jaxrs:serviceBeans>
             <bean class="au.edu.unsw.soacourse.ors.HelloWorld"/>
+            <bean class="au.edu.unsw.soacourse.ors.RegisteredUserService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>

@@ -22,12 +22,13 @@ public enum RegisteredUserDAO {
 	
 	//Initialisation
 	private RegisteredUserDAO() {
-		createRegisteredUsers();
+		System.out.println("initialising");
+		registeredUsersMap = createRegisteredUsers();
 	}
 	
 	
 	//Populates the registered users map with the xml contents
-	private void createRegisteredUsers() {
+	private Map<String,RegisteredUser> createRegisteredUsers() {
 		
 		NodeList nodes = readRegisteredUsers();	//get the nodes from the xml file i.e. all the entry nodes
 		
@@ -36,23 +37,31 @@ public enum RegisteredUserDAO {
 			
 			if(node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
-				RegisteredUser user = new RegisteredUser();
 				
-				user.setuId(element.getElementsByTagName("uid").item(0).getTextContent());
-				user.setPassword(element.getElementsByTagName("pwd").item(0).getTextContent());
-				user.setShortKey(element.getElementsByTagName("ShortKey").item(0).getTextContent());
-				
-				user.setLastName(element.getElementsByTagName("LastName").item(0).getTextContent());
-				user.setFirstName(element.getElementsByTagName("FirstName").item(0).getTextContent());
-				user.setRole(element.getElementsByTagName("Role").item(0).getTextContent());
-				user.setDepartment(element.getElementsByTagName("Department").item(0).getTextContent());
-				
-				registeredUsersMap.put(element.getElementsByTagName("uid").item(0).getTextContent(), user);
-				
+				try {
+					RegisteredUser user = new RegisteredUser();
+					
+					user.setuId(element.getElementsByTagName("uid").item(0).getTextContent());
+					user.setPassword(element.getElementsByTagName("pwd").item(0).getTextContent());
+					user.setShortKey(element.getElementsByTagName("ShortKey").item(0).getTextContent());
+					
+					user.setLastName(element.getElementsByTagName("LastName").item(0).getTextContent());
+					user.setFirstName(element.getElementsByTagName("FirstName").item(0).getTextContent());
+					user.setRole(element.getElementsByTagName("Role").item(0).getTextContent());
+					user.setDepartment(element.getElementsByTagName("Department").item(0).getTextContent());
+					
+					registeredUsersMap.put(element.getElementsByTagName("uid").item(0).getTextContent(), user);
+					
+					System.out.println(element.getElementsByTagName("uid").item(0).getTextContent());
+					
+				} catch(Exception e) {
+					e.printStackTrace();
+					
+				}
 			}
 		}
 		
-		//return registeredUsersMap;
+		return registeredUsersMap;
 	}
 	
 	
