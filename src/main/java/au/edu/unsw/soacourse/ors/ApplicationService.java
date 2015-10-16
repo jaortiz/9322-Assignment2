@@ -59,9 +59,6 @@ public class ApplicationService {
 	public Response getApplication(@PathParam("appID") String appId) {
 		System.out.println("get");
 		Application application = applicationDAO.getApplication(appId);
-		if(application == null) {
-			System.out.println("null");
-		}
 		return Response.ok().entity(application).build();
 	}
 }
