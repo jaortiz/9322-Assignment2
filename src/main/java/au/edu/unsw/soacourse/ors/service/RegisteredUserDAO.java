@@ -1,7 +1,9 @@
 package au.edu.unsw.soacourse.ors.service;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -14,71 +16,71 @@ import org.w3c.dom.NodeList;
 
 import au.edu.unsw.soacourse.ors.model.*;
 
-public enum RegisteredUserDAO {
-	instance;
+public class RegisteredUserDAO {
 	
-	//Map key pair <uid, registeredUserObject>
-	private Map<String,RegisteredUser> registeredUsersMap = new HashMap<String,RegisteredUser>();
+private List<RegisteredUser> registeredUsers = new ArrayList<RegisteredUser>();
 	
-	//Initialisation
-	private RegisteredUserDAO() {
-		System.out.println("initialising");
-		registeredUsersMap = createRegisteredUsers();
+	public RegisteredUserDAO() {
+		System.out.println("initialisng");
+		registeredUsers = createRegisteredUsers();
 	}
 	
-	
-	//Populates the registered users map with the xml contents
-	private Map<String,RegisteredUser> createRegisteredUsers() {
+	private List<RegisteredUser> createRegisteredUsers() {
 		
 		NodeList nodes = readRegisteredUsers();	//get the nodes from the xml file i.e. all the entry nodes
+		
+		System.out.println("No Nodes:" + nodes.getLength());
 		
 		for(int i = 0;i < nodes.getLength();i++) {
 			Node node = nodes.item(i);
 			
 			if(node.getNodeType() == Node.ELEMENT_NODE) {
 				Element element = (Element) node;
-				
 				try {
 					RegisteredUser user = new RegisteredUser();
 					
-					user.setuId(element.getElementsByTagName("uid").item(0).getTextContent());
-					user.setPassword(element.getElementsByTagName("pwd").item(0).getTextContent());
-					user.setShortKey(element.getElementsByTagName("ShortKey").item(0).getTextContent());
+					Element loginElement = (Element) element.getElementsByTagName("Login").item(0);
+					user.setuId(loginElement.getElementsByTagName("_uid").item(0).getTextContent());
+					user.setPassword(loginElement.getElementsByTagName("_pwd").item(0).getTextContent());
+					user.setShortKey(loginElement.getElementsByTagName("ShortKey").item(0).getTextContent());
 					
-					user.setLastName(element.getElementsByTagName("LastName").item(0).getTextContent());
-					user.setFirstName(element.getElementsByTagName("FirstName").item(0).getTextContent());
-					user.setRole(element.getElementsByTagName("Role").item(0).getTextContent());
-					user.setDepartment(element.getElementsByTagName("Department").item(0).getTextContent());
+					Element detailElement = (Element) element.getElementsByTagName("Details").item(0);
+					user.setLastName(detailElement.getElementsByTagName("LastName").item(0).getTextContent());
+					user.setFirstName(detailElement.getElementsByTagName("FirstName").item(0).getTextContent());
+					user.setRole(detailElement.getElementsByTagName("Role").item(0).getTextContent());
+					user.setDepartment(detailElement.getElementsByTagName("Department").item(0).getTextContent());
 					
-					registeredUsersMap.put(element.getElementsByTagName("uid").item(0).getTextContent(), user);
-					
-					System.out.println(element.getElementsByTagName("uid").item(0).getTextContent());
+					registeredUsers.add(user);
 					
 				} catch(Exception e) {
+					
 					e.printStackTrace();
 					
 				}
 			}
 		}
 		
-		return registeredUsersMap;
+		return registeredUsers;
 	}
 	
 	
 	//Read the xml and return the entry nodes of the xml
 	private NodeList readRegisteredUsers() {
-		
+
+		//InputSource xmlFile = new InputSource(System.getProperty("catalina.home") + File.separator + 
+			//	"webapps" + File.separator + "ROOT" + File.separator + "resources" + File.separator + "RegisteredUsers.xml");
 		ClassLoader cl = this.getClass().getClassLoader();
 		NodeList nodes = null;
-		InputStream registeredUsersXML = cl.getResourceAsStream("RegisteredUsers.xml");
+		InputStream xmlFile = cl.getResourceAsStream("RegisteredUsers.xml");
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(registeredUsersXML);
+			Document doc = builder.parse(xmlFile);
 			nodes = doc.getElementsByTagName("Entry");
 			
 		} catch (Exception e) {
+			
 			e.printStackTrace();
 		}
 		
@@ -86,9 +88,7 @@ public enum RegisteredUserDAO {
 		
 	}
 	
-	
-	//Getter 
-	public Map<String,RegisteredUser> getUsers() {
-		return registeredUsersMap;
+	public List<RegisteredUser> getUsers() {
+		return this.registeredUsers;
 	}
 }

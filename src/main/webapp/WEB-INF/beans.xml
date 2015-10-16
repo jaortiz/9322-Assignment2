@@ -5,6 +5,7 @@
     <context:annotation-config/>
     <bean class="org.springframework.web.context.support.ServletContextPropertyPlaceholderConfigurer"/>
     <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer"/>
+    <bean id="registeredUserDAO" class="au.edu.unsw.soacourse.ors.service.RegisteredUserDAO"/>
     <jaxrs:server id="services" address="/">
         <jaxrs:serviceBeans>
             <bean class="au.edu.unsw.soacourse.ors.HelloWorld"/>

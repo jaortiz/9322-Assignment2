@@ -16,14 +16,14 @@ import au.edu.unsw.soacourse.ors.service.*;
 @Path("/RegisteredUser")
 public class RegisteredUserService {
 
-	
-	//private RegisteredUserDAO registeredUserDAO;
+	@Autowired
+	private RegisteredUserDAO registeredUserDAO;
 	
 	@GET
 	@Path("size")
 	@Produces(MediaType.TEXT_PLAIN)
 	public String getCount() {
-		int size = RegisteredUserDAO.instance.getUsers().size();
+		int size = registeredUserDAO.getUsers().size();
 		return String.valueOf(size);
 	}
 	
