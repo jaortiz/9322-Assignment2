@@ -3,7 +3,7 @@ package au.edu.unsw.soacourse.ors.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Applications {
+public class Application {
 	private String appId;
 	private String jobId;
 	

@@ -3,7 +3,7 @@ package au.edu.unsw.soacourse.ors.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Reviews {
+public class Review {
 	private String reviewId;
 	private String appId;	//application ID
 	private String uId;		//user/reviewer Id

@@ -3,7 +3,7 @@ package au.edu.unsw.soacourse.ors.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class AutoChecks {
+public class AutoCheck {
 	private String autoCheckId;
 	private String appId;
 	
