@@ -4,22 +4,21 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class AutoCheck {
-	private String autoCheckId;
-	private String appId;
+	private int autoCheckId;
+	private int appId;
 	
 	private String result;
-	private String details;
 	
-	public String getAutoCheckId() {
+	public int getAutoCheckId() {
 		return autoCheckId;
 	}
-	public void setAutoCheckId(String autoCheckId) {
+	public void setAutoCheckId(int autoCheckId) {
 		this.autoCheckId = autoCheckId;
 	}
-	public String getAppId() {
+	public int getAppId() {
 		return appId;
 	}
-	public void setAppId(String appId) {
+	public void setAppId(int appId) {
 		this.appId = appId;
 	}
 	public String getResult() {
@@ -28,12 +27,5 @@ public class AutoCheck {
 	public void setResult(String result) {
 		this.result = result;
 	}
-	public String getDetails() {
-		return details;
-	}
-	public void setDetails(String details) {
-		this.details = details;
-	}
-	
 	
 }

@@ -10,6 +10,7 @@ public class Application {
 	//personal details
 	private String firstName;
 	private String lastName;
+	private int driversLicence;
 	private String email;
 	private String phoneNumber;
 	
@@ -42,6 +43,12 @@ public class Application {
 	}
 	public void setLastName(String lastName) {
 		this.lastName = lastName;
+	}
+	public int getDriversLicence() {
+		return driversLicence;
+	}
+	public void setDriversLicence(int driversLicence) {
+		this.driversLicence = driversLicence;
 	}
 	public String getEmail() {
 		return email;
