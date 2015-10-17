@@ -79,7 +79,6 @@ public class JobPostingsService {
 		int jobID = Integer.parseInt(idString);
 		
 		JobsDAOImpl jobsDAO = new JobsDAOImpl();
-		jobsDAO.setUpDatabase();
 		jobsDAO.archiveJob(jobID);
 		
 	}
