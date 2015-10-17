@@ -33,7 +33,7 @@ public interface JobsDAO {
 	 * updates the job with new details
 	 * @param job the model containing the updated elements
 	 */
-	void updateJobById (JobPosting job);	
+	JobPosting updateJobById (JobPosting job);	
 	
 	/**
 	 * Retrieves the jobs according to the search

@@ -220,9 +220,81 @@ public class JobsDAOImpl implements JobsDAO {
 	}
 
 	@Override
-	public void updateJobById(JobPosting job) {
-		// TODO Auto-generated method stub
-
+	public JobPosting updateJobById(JobPosting jobToUpdate) {
+		JobPosting job = getJobById(jobToUpdate.getJobId());
+		if(jobToUpdate.getJobName() != null && !job.getJobName().equals(jobToUpdate.getJobName())) {
+			job.setJobName(jobToUpdate.getJobName());
+		}
+		if(jobToUpdate.getLocation() != null && !job.getLocation().equals(jobToUpdate.getLocation())) {
+			job.setLocation(jobToUpdate.getLocation());
+		}
+		if(jobToUpdate.getPosition() != null && !job.getPosition().equals(jobToUpdate.getPosition())) {
+			job.setPosition(jobToUpdate.getPosition());
+		}
+		if(jobToUpdate.getSalary() != 0 && !job.getPosition().equals(jobToUpdate.getSalary())) {
+			job.setSalary(jobToUpdate.getSalary());
+		}
+		if(jobToUpdate.getStatus() != null && !job.getStatus().equals(jobToUpdate.getStatus())) {
+			job.setStatus(jobToUpdate.getStatus());
+		}
+		if(jobToUpdate.getClosingDate() != null && !job.getClosingDate().equals(jobToUpdate.getClosingDate())) {
+			job.setClosingDate(jobToUpdate.getClosingDate());
+		}
+		if(jobToUpdate.getDescription() != null && !job.getDescription().equals(jobToUpdate.getDescription())) {
+			job.setDescription(jobToUpdate.getDescription());
+		}
+		
+		Connection c = null;
+		PreparedStatement stmt = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("UPDATE JOBPOSTINGS "
+		    		+ "SET JOBNAME = ?, CLOSEDATE = ?, SALARY = ?, POSITIONTYPE = ?, "
+		    		+ "LOCATION = ?, DESCRIPTION = ?, STATUS = ?"
+		    		+ "WHERE ID = ? "); 
+		    stmt.setString(1, job.getJobName());
+		    stmt.setString(2, job.getClosingDate());
+		    stmt.setInt(3, job.getSalary());
+		    stmt.setString(4, job.getPosition());
+		    stmt.setString(5, job.getLocation());
+		    stmt.setString(6, job.getDescription());
+		    stmt.setString(7, job.getStatus());
+		    stmt.setInt(8, job.getJobId());
+		    
+		    stmt.executeUpdate();
+		    c.commit();
+		    
+		    stmt = c.prepareStatement("SELECT * FROM JOBPOSTINGS WHERE ID = ? "); 
+		    stmt.setInt(1, job.getJobId());
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    rs.next();
+		    job = new JobPosting();
+			job.setJobId(rs.getInt("ID"));
+			job.setJobName(rs.getString("JOBNAME"));
+			job.setClosingDate(rs.getString("CLOSEDATE"));
+			job.setSalary(rs.getInt("SALARY"));
+			job.setPosition(rs.getString("POSITIONTYPE"));
+			job.setLocation(rs.getString("LOCATION"));
+			job.setDescription(rs.getString("DESCRIPTION"));
+			job.setStatus(rs.getString("STATUS"));
+			
+			
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return job;
 	}
 
 ;
