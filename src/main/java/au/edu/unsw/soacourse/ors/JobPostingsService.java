@@ -24,7 +24,6 @@ import au.edu.unsw.soacourse.ors.model.JobPosting;
 /**
  * NEED TO DO:
  * IMPROVE SECURITY OF ALL FUNCTIONS
- * updating a job posting
  * Archiving a job posting - restrict to manager
  * ALSO NEED TO TEST
  *
