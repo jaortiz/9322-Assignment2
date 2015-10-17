@@ -4,8 +4,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Application {
-	private String appId;
-	private String jobId;
+	private int appId;
+	private int jobId;
 	
 	//personal details
 	private String firstName;
@@ -19,16 +19,16 @@ public class Application {
 	private String status;
 	
 	
-	public String getAppId() {
+	public int getAppId() {
 		return appId;
 	}
-	public void setAppId(String appId) {
+	public void setAppId(int appId) {
 		this.appId = appId;
 	}
-	public String getJobId() {
+	public int getJobId() {
 		return jobId;
 	}
-	public void setJobId(String jobId) {
+	public void setJobId(int jobId) {
 		this.jobId = jobId;
 	}
 	public String getFirstName() {

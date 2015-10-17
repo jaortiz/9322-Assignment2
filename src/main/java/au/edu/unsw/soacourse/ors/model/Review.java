@@ -4,29 +4,30 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class Review {
-	private String reviewId;
-	private String appId;	//application ID
-	private String uId;		//user/reviewer Id
+	private int reviewId;
+	private int appId;	//application ID
+	private int uId;		//user/reviewer Id
 	
 	private String comments;
 	private String decision;
 	
-	public String getReviewId() {
+	
+	public int getReviewId() {
 		return reviewId;
 	}
-	public void setReviewId(String reviewId) {
+	public void setReviewId(int reviewId) {
 		this.reviewId = reviewId;
 	}
-	public String getAppId() {
+	public int getAppId() {
 		return appId;
 	}
-	public void setAppId(String appId) {
+	public void setAppId(int appId) {
 		this.appId = appId;
 	}
-	public String getuId() {
+	public int getuId() {
 		return uId;
 	}
-	public void setuId(String uId) {
+	public void setuId(int uId) {
 		this.uId = uId;
 	}
 	public String getComments() {
