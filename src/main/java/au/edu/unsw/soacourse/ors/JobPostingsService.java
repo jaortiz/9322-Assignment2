@@ -37,6 +37,13 @@ public class JobPostingsService {
 	@Context
 	Request request;
 	
+	@GET
+	@Path("setUpDatabase")
+	public void setUpDatabase() {
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		jobsDAO.setUpDatabase();
+	}
+	
 	@POST
 	@Path("createJobPosting")
     @Consumes("application/json")

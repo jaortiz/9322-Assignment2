@@ -8,7 +8,7 @@ import au.edu.unsw.soacourse.ors.dao.support.*;
 public class DAOFactory {
 	
 	private static final String JOBS_DAO = "jobsDAO";
-	
+	private static final String APPLICATIONS_DAO = "applicationsDAO";
 	private Map daos;
 	
 	private static DAOFactory instance = new DAOFactory();
@@ -16,6 +16,7 @@ public class DAOFactory {
 	private DAOFactory() {
 		daos = new HashMap();
 		daos.put(JOBS_DAO, new JobsDAOImpl());
+		//daos.put(APPLICATIONS_DAO, )
 	}
 	
 	/**
