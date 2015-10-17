@@ -5,12 +5,14 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
@@ -20,9 +22,8 @@ import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
 /**
  * NEED TO DO:
- * create job - return something
+ * IMPROVE SECURITY OF ALL FUNCTIONS
  * updating a job posting
- * Searching a job posting 
  * Archiving a job posting - restrict to manager
  * ALSO NEED TO TEST
  *
@@ -47,14 +48,15 @@ public class JobPostingsService {
 	@POST
 	@Path("createJobPosting")
     @Consumes("application/json")
-	public void newJob(JobPosting newJob) throws IOException {
+	@Produces(MediaType.TEXT_PLAIN)
+	public String newJob(JobPosting newJob) throws IOException {
 		
 		JobsDAOImpl jobsDAO = new JobsDAOImpl();
 		
 		int jobId = jobsDAO.createJob(newJob);
-		
-		
-		//TODO: Return the newly generated job
+		return "The created job is available at: " 
+				+ uriInfo.getBaseUri().toASCIIString()
+				+ "jobPostings/" + jobId;
 	}
 	
 	@GET
@@ -77,6 +79,32 @@ public class JobPostingsService {
 		
 		return job;
 		
+	}
+	
+	// Can Search using jobName, position, location, status
+	@GET
+	@Path("jobSearch")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<JobPosting> searchJobs(
+			@DefaultValue("") @QueryParam("jobName") String name,
+			@DefaultValue("") @QueryParam("position") String position,
+			@DefaultValue("") @QueryParam("location") String location,
+			@DefaultValue("") @QueryParam("description") String description,
+			@DefaultValue("") @QueryParam("status") String status) {
+		
+		JobPosting job = new JobPosting();
+		job.setJobName(name);
+		job.setPosition(position);
+		job.setLocation(location);
+		job.setDescription(description);
+		job.setStatus(status);
+		
+		JobsDAOImpl jobsDAO = new JobsDAOImpl();
+		List<JobPosting> jobSearchResults = jobsDAO.getJobsBySearch(job);
+		
+		
+		return jobSearchResults;
 	}
 	
 	

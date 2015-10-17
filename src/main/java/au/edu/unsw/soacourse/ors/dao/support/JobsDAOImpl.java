@@ -84,7 +84,34 @@ public class JobsDAOImpl implements JobsDAO {
 	      System.exit(0);
 	    }
 	    System.out.println("Records created successfully");
-	    return countJobs();
+	    return lastJob();
+	}
+	
+	public int lastJob() {
+		Connection c = null;
+		Statement stmt = null;
+		int lastJobId = 0;
+		
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	      
+	      stmt = c.createStatement();
+	      ResultSet rs = stmt.executeQuery( "SELECT * FROM JOBPOSTINGS WHERE ID = (SELECT MAX(ID) FROM JOBPOSTINGS);" );
+	      rs.next();
+	      lastJobId = rs.getInt("ID") ;
+	      rs.close() ;
+	      
+	      c.commit();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return lastJobId;
 	}
 	
 	public int countJobs() {
@@ -198,10 +225,61 @@ public class JobsDAOImpl implements JobsDAO {
 
 	}
 
+;
 	@Override
 	public List<JobPosting> getJobsBySearch(JobPosting job) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection c = null;
+		PreparedStatement stmt = null;
+		List<JobPosting> jobList = new ArrayList<JobPosting>();
+		JobPosting jobRecord = null;
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	      
+	      String wildCard = "%";
+	      String name = wildCard + job.getJobName() + wildCard;
+	      String position = wildCard + job.getPosition() + wildCard;
+	      String location = wildCard + job.getLocation() + wildCard;
+	      String description = wildCard + job.getDescription() + wildCard;
+	      String status = wildCard + job.getStatus() + wildCard;
+	      
+	      stmt = c.prepareStatement("SELECT * FROM JOBPOSTINGS WHERE LOWER(JOBNAME) LIKE LOWER(?)" +
+	    		  	"AND LOWER(POSITIONTYPE) LIKE LOWER(?)" + 
+	    		  	"AND LOWER(LOCATION) LIKE LOWER(?)" +
+	    		  	"AND LOWER(DESCRIPTION) LIKE LOWER(?)" + 
+	    		  	"AND LOWER(STATUS) LIKE LOWER(?)");
+	      
+	      stmt.setString(1, name);
+	      stmt.setString(2, position);
+	      stmt.setString(3, location);
+	      stmt.setString(4, description);
+	      stmt.setString(5, status);
+	      
+	      ResultSet rs = stmt.executeQuery();
+	      while ( rs.next() ) {
+	    	  jobRecord = new JobPosting();
+	          jobRecord.setJobId(rs.getInt("ID"));
+	          jobRecord.setJobName(rs.getString("JOBNAME"));
+	          jobRecord.setClosingDate(rs.getString("CLOSEDATE"));
+	          jobRecord.setSalary(rs.getInt("SALARY"));
+	          jobRecord.setPosition(rs.getString("POSITIONTYPE"));
+	          jobRecord.setLocation(rs.getString("LOCATION"));
+	          jobRecord.setDescription(rs.getString("DESCRIPTION"));
+	          jobRecord.setStatus(rs.getString("STATUS"));
+	          
+	          jobList.add(jobRecord);
+	      }
+	      rs.close() ;
+	      stmt.close();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return jobList;
 	}
 
 	@Override
