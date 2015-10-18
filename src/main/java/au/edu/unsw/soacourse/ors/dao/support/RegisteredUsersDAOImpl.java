@@ -22,7 +22,6 @@ import au.edu.unsw.soacourse.ors.model.RegisteredUser;
 
 public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 
-	private List<RegisteredUser> registeredUsers = new ArrayList<RegisteredUser>();
 
 	public void setUpDatabase () {
 		Connection c = null;
@@ -192,8 +191,6 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 	      stmt.setString(1, "%" + department + "%");	//Have % wildcard here since prepated statement didnt like it above...
 		  ResultSet rs = stmt.executeQuery();
 	      
-	    
-	     
 	      while ( rs.next() ) {
 	    	  user = new RegisteredUser();
 	    	  user.setuId(rs.getString("UID"));

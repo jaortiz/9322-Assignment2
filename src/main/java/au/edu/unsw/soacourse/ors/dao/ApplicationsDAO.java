@@ -54,7 +54,7 @@ public interface ApplicationsDAO {
 	 * @param appId
 	 * @return
 	 */
-	Application getArchivedApplicaitonById(int appId);
+	Application getArchivedApplicationById(int appId);
 	
 	
 	/**
@@ -64,4 +64,11 @@ public interface ApplicationsDAO {
 	 */
 	List<Application> getAllArchivedApplications();
 	
+	/**
+	 * Gets a list of all applications for a job posting
+	 * 
+	 * @param jobID
+	 * @return
+	 */
+	List<Application> getAllApplicationsByJobID(int jobID);
 }

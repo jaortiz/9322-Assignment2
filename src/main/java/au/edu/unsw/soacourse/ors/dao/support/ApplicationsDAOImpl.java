@@ -272,7 +272,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	}
 
 	@Override
-	public Application getArchivedApplicaitonById(int appId) {
+	public Application getArchivedApplicationById(int appId) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -304,6 +304,48 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 			application.setStatus(rs.getString("STATUS"));
 	          
 			appList.add(application);
+	      }
+	      rs.close() ;
+	      stmt.close();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return appList;
+	}
+
+	@Override
+	public List<Application> getAllApplicationsByJobID(int jobID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		List<Application> appList = new ArrayList<Application>();
+		Application application = null;
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	      
+	      stmt = c.prepareStatement("SELECT * FROM APPLICATIONS WHERE JOBID = ?");
+	      stmt.setInt(1, jobID);
+	      ResultSet rs = stmt.executeQuery();
+	      
+	      while ( rs.next() ) {
+    	  	application = new Application();
+			application.setAppId(rs.getInt("ID"));
+			application.setJobId(rs.getInt("JOBID"));
+			application.setFirstName(rs.getString("FIRSTNAME"));
+			application.setLastName(rs.getString("LASTNAME"));
+			application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
+			application.setEmail(rs.getString("EMAIL"));
+			application.setPhoneNumber(rs.getString("PHONENUMBER"));
+			application.setCoverLetter(rs.getString("COVERLETTER"));
+			application.setResume(rs.getString("RESUME"));
+			application.setStatus(rs.getString("STATUS"));
+	          
+	          appList.add(application);
 	      }
 	      rs.close() ;
 	      stmt.close();

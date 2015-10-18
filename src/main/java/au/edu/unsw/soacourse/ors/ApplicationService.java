@@ -6,6 +6,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,11 +44,12 @@ public class ApplicationService {
 		
 		ApplicationsDAOImpl appDAO = new ApplicationsDAOImpl();
 		int appID = appDAO.createApplication(newApp);
-		return Response.created(new URI("http://localhost8080/ORSRestfulService/applications/view?appID=" + appID)).build();
+		return Response.created(new URI(uriInfo.getBaseUri() + "applications/viewByID?appID=" + appID)).build();
 	}
 	
-	//ON GET Returns all the applications in the database
+	
 	@GET
+	@Path("viewAll")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllApplications() throws IOException {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
@@ -56,12 +58,29 @@ public class ApplicationService {
 	}
 	
 	@GET
-	@Path("view")
+	@Path("viewByID")
 	@Produces(MediaType.APPLICATION_JSON) 
 	public Response getApplicationbyID(@QueryParam("appID") int appID) {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
 		Application app = appsDAO.getApplicationByID(appID);
 		return Response.ok().entity(app).build();
 		
+	}
+	
+	@GET
+	@Path("viewByJobID")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllApplicationsByJobID(@QueryParam("jobID") int jobID) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		List<Application> appList = appsDAO.getAllApplicationsByJobID(jobID);
+		return Response.ok().entity(appList).build();
+	}
+	
+	@DELETE
+	@Path("archive")
+	public Response archiveApplicationByID(@QueryParam("appID") int appID) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		appsDAO.archiveApplication(appID);
+		return Response.ok().build();
 	}
 }
