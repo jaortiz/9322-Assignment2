@@ -10,4 +10,5 @@ public interface RegisteredUsersDAO {
 	
 	List<RegisteredUser> getUsersbyDepartment(String department);
 	
+	boolean checkLogin(String uid, String password);
 }

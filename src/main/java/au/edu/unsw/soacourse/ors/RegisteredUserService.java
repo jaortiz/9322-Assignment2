@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -36,6 +38,15 @@ public class RegisteredUserService {
 		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
 		List<RegisteredUser> userList = regUsersDAO.getUsersbyDepartment(hireTeam);
 		return Response.ok().entity(userList).build();
+	}
+	
+	@POST
+	@Path("/login")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response loginAuthentication(@FormParam("uid")String uid, @FormParam("password") String password) {
+		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
+		boolean verified = regUsersDAO.checkLogin(uid, password);
+		return Response.ok().entity(verified).build();
 	}
 	
 	//DELETE LATER

@@ -18,6 +18,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import au.edu.unsw.soacourse.ors.dao.RegisteredUsersDAO;
+import au.edu.unsw.soacourse.ors.model.Application;
 import au.edu.unsw.soacourse.ors.model.RegisteredUser;
 
 public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
@@ -213,5 +214,40 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 	    }
 		
 	    return userList;
+	}
+
+
+
+	@Override
+	public boolean checkLogin(String uid, String password) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		boolean verified = false;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM REGISTEREDUSERS WHERE UID = ? "); 
+		    stmt.setString(1, uid);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    if(rs.next()) {	//if result set is not empty
+		    	String pass = rs.getString("PASSWORD");
+		    	if(pass.equals(password)) {
+		    		verified = true;
+		    	}
+		    } 
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    return verified;
 	}
 }
