@@ -7,7 +7,9 @@ import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,18 +22,23 @@ public class RegisteredUserService {
 	
 	@GET
 	@Path("setUpDatabase")
-	public void setUpDatabase() {
+	public Response setUpDatabase() {
 		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
 		regUsersDAO.setUpDatabase();
+		return Response.ok().build();
 	}
 	
-	/*
+	
 	@GET
 	@Path("/users")
-	@produces(MediaType.APPLICATION_JSON)
-	public List<RegisteredUser> searchUsersByTeam
-	*/
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response searchUsersByTeam(@QueryParam("hireTeam")String hireTeam) {
+		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
+		List<RegisteredUser> userList = regUsersDAO.getUsersbyDepartment(hireTeam);
+		return Response.ok().entity(userList).build();
+	}
 	
+	//DELETE LATER
 	@GET
 	@Path("size")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -44,11 +51,11 @@ public class RegisteredUserService {
 	//helper method to get a list of all the registered users SHOULD PROBABLY DELETE THIS LATER
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<RegisteredUser> getAllUsers() throws IOException {
+	public Response getAllUsers() throws IOException {
 		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
 		
 		List<RegisteredUser> userList = regUsersDAO.getUsers();
-		return userList;
+		return Response.ok().entity(userList).build();
 	}
 	
 	

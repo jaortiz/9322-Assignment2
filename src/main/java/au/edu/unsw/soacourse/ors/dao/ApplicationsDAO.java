@@ -21,7 +21,7 @@ public interface ApplicationsDAO {
 	 * @param appID
 	 * @return
 	 */
-	Application getApplicaitonByID(int appID);
+	Application getApplicationByID(int appID);
 	
 	
 	/**

@@ -124,7 +124,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	}
 	
 	@Override
-	public Application getApplicaitonByID(int appID) {
+	public Application getApplicationByID(int appID) {
 		Connection c = null;
 		PreparedStatement stmt = null;
 		Application application = null;

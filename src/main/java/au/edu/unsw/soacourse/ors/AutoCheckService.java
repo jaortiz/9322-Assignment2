@@ -38,7 +38,7 @@ public class AutoCheckService {
 		int appId = Integer.parseInt(appIdString);
 		
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
-		Application app = appsDAO.getApplicaitonByID(appId);
+		Application app = appsDAO.getApplicationByID(appId);
 
 		//TODO: Run the bpel service with the details here
 		// If app has been checked before return nothing but check  again to update if it has changed

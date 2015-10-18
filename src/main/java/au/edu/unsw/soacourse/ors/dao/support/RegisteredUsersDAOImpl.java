@@ -173,4 +173,48 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 		return nodes;
 		
 	}
+
+
+
+	@Override
+	public List<RegisteredUser> getUsersbyDepartment(String department) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		List<RegisteredUser> userList = new ArrayList<RegisteredUser>();
+		RegisteredUser user = null;
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	     
+	      
+	      stmt = c.prepareStatement("SELECT * FROM REGISTEREDUSERS WHERE DEPARTMENT LIKE ?"); 
+	      stmt.setString(1, "%" + department + "%");	//Have % wildcard here since prepated statement didnt like it above...
+		  ResultSet rs = stmt.executeQuery();
+	      
+	    
+	     
+	      while ( rs.next() ) {
+	    	  user = new RegisteredUser();
+	    	  user.setuId(rs.getString("UID"));
+	    	  user.setPassword(rs.getString("PASSWORD"));
+	    	  user.setShortKey(rs.getString("SHORTKEY"));
+	    	  user.setLastName(rs.getString("LASTNAME"));
+	    	  user.setFirstName(rs.getString("FIRSTNAME"));
+	    	  user.setRole(rs.getString("ROLE"));
+	    	  user.setDepartment(rs.getString("DEPARTMENT"));
+	    	  
+	    	  userList.add(user);
+	      }
+	      rs.close() ;
+	      stmt.close();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return userList;
+	}
 }

@@ -8,4 +8,6 @@ public interface RegisteredUsersDAO {
 	
 	List<RegisteredUser> getUsers();
 	
+	List<RegisteredUser> getUsersbyDepartment(String department);
+	
 }
