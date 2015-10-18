@@ -12,6 +12,8 @@
             <bean class="au.edu.unsw.soacourse.ors.JobPostingsService"/>
             <bean class="au.edu.unsw.soacourse.ors.ReviewService"/>
             <bean class="au.edu.unsw.soacourse.ors.ApplicationService"/>
+            <bean class="au.edu.unsw.soacourse.ors.AutoCheckService"/>
+            <bean class="au.edu.unsw.soacourse.ors.SetUpDBService"/>
         </jaxrs:serviceBeans>
         <jaxrs:providers>
             <bean class="org.codehaus.jackson.jaxrs.JacksonJsonProvider"/>

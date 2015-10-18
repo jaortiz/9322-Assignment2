@@ -33,9 +33,6 @@ import javax.xml.soap.SOAPMessage;
 import javax.xml.ws.WebServiceContext;
 import javax.xml.ws.handler.MessageContext;
 
-import au.edu.unsw.marketdatautil.MarketDataFault;
-import au.edu.unsw.marketdatautil.MarketDataFaultMsg;
-import au.edu.unsw.marketdatautil.MarketDataFaultType;
 import au.edu.unsw.soacourse.ors.dao.support.ApplicationsDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.AutoCheckDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
@@ -122,7 +119,7 @@ public class AutoCheckService {
 			
 			driversLicenceElem.addTextNode(Integer.toString(app.getDriversLicence()));
 			nameElem.addTextNode(app.getFirstName() + " " + app.getLastName());
-			postCodeElem.addTextNode(Integer.toString(app.getPostCode()));
+			postCodeElem.addTextNode(Integer.toString(app.getPostcode()));
 			
 			System.out.println("\n Soap Request:\n");
 		    sm.writeTo(System.out);
