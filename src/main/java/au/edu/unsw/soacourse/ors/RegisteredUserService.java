@@ -25,6 +25,13 @@ public class RegisteredUserService {
 		regUsersDAO.setUpDatabase();
 	}
 	
+	/*
+	@GET
+	@Path("/users")
+	@produces(MediaType.APPLICATION_JSON)
+	public List<RegisteredUser> searchUsersByTeam
+	*/
+	
 	@GET
 	@Path("size")
 	@Produces(MediaType.TEXT_PLAIN)
@@ -34,6 +41,7 @@ public class RegisteredUserService {
 		return size;
 	}
 	
+	//helper method to get a list of all the registered users SHOULD PROBABLY DELETE THIS LATER
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<RegisteredUser> getAllUsers() throws IOException {

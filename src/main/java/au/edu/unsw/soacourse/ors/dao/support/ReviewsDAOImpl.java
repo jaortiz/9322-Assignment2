@@ -26,7 +26,7 @@ public class ReviewsDAOImpl implements ReviewDAO{
 	      String sql = "CREATE TABLE IF NOT EXISTS REVIEWS " +
 	                   "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
 	                   " APPID           	INTEGER    NOT NULL, " + 
-	                   " USERID				INTEGER, " + 
+	                   " UID				TEXT, " + 
 	                   " COMMENTS			TEXT, " +
 	                   " DECISION				TEXT)"; 
 	      stmt.executeUpdate(sql);
@@ -50,12 +50,12 @@ public class ReviewsDAOImpl implements ReviewDAO{
 	    	c.setAutoCommit(false);
 		    System.out.println("Opened database successfully");
 		    
-		    stmt = c.prepareStatement("INSERT INTO REVIEWS (APPID, USERID, " +
+		    stmt = c.prepareStatement("INSERT INTO REVIEWS (APPID, UID, " +
 			    	"COMMENTS, DECISION) " +
 			    	"VALUES (?,?,?,?);");
 		    
 		    stmt.setInt(1, review.getAppId());
-		    stmt.setInt(2, review.getuId());
+		    stmt.setString(2, review.getuId());
 		    stmt.setString(3, review.getComments());
 		    stmt.setString(4, review.getDecision());
 		    stmt.executeUpdate();
@@ -96,7 +96,7 @@ public class ReviewsDAOImpl implements ReviewDAO{
 	    	  review = new Review();
 	    	  review.setReviewId(rs.getInt("ID"));
 	    	  review.setAppId(rs.getInt("APPID"));
-	    	  review.setuId(rs.getInt("USERID"));
+	    	  review.setuId(rs.getString("UID"));
 	    	  review.setComments(rs.getString("COMMENTS"));
 	    	  review.setDecision(rs.getString("DECISION"));
 	    	  reviewList.add(review);

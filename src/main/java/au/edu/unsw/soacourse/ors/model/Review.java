@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Review {
 	private int reviewId;
 	private int appId;	//application ID
-	private int uId;		//user/reviewer Id
+	private String uId;		//user/reviewer Id
 	
 	private String comments;
 	private String decision;
@@ -24,10 +24,10 @@ public class Review {
 	public void setAppId(int appId) {
 		this.appId = appId;
 	}
-	public int getuId() {
+	public String getuId() {
 		return uId;
 	}
-	public void setuId(int uId) {
+	public void setuId(String uId) {
 		this.uId = uId;
 	}
 	public String getComments() {

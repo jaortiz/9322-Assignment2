@@ -35,7 +35,7 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 	      stmt = c.createStatement();
 	      String sql = "CREATE TABLE IF NOT EXISTS REGISTEREDUSERS " +
 	                   "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
-	                   " UID					INTEGER NOT NULL, " +				
+	                   " UID					TEXT NOT NULL, " +				
 	                   " PASSWORD           	TEXT    NOT NULL, " + 
 	                   " SHORTKEY				TEXT, " + 
 	                   " LASTNAME				TEXT, " +
@@ -86,7 +86,7 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 					    Element loginElement = (Element) element.getElementsByTagName("Login").item(0);
 					    Element detailElement = (Element) element.getElementsByTagName("Details").item(0);
 					    
-					    stmt.setInt(1, Integer.parseInt(loginElement.getElementsByTagName("_uid").item(0).getTextContent()));
+					    stmt.setString(1, loginElement.getElementsByTagName("_uid").item(0).getTextContent());
 						stmt.setString(2, loginElement.getElementsByTagName("_pwd").item(0).getTextContent());
 						stmt.setString(3, loginElement.getElementsByTagName("ShortKey").item(0).getTextContent());
 						
@@ -128,7 +128,7 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 	      ResultSet rs = stmt.executeQuery( "SELECT * FROM REGISTEREDUSERS;" );
 	      while ( rs.next() ) {
 	    	  user = new RegisteredUser();
-	    	  user.setuId(rs.getInt("UID"));
+	    	  user.setuId(rs.getString("UID"));
 	    	  user.setPassword(rs.getString("PASSWORD"));
 	    	  user.setShortKey(rs.getString("SHORTKEY"));
 	    	  user.setLastName(rs.getString("LASTNAME"));
