@@ -92,13 +92,13 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	      System.exit(0);
 	    }
 	    System.out.println("Records created successfully");
-	    return countApplications();
+	    return lastApplication();
 	}
 
-	public int countApplications() {
+	public int lastApplication() {
 		Connection c = null;
 		Statement stmt = null;
-		int count = 0;
+		int lastAppId = 0;
 		
 		try {
 	      Class.forName("org.sqlite.JDBC");
@@ -106,9 +106,9 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	      c.setAutoCommit(false);
 	      
 	      stmt = c.createStatement();
-	      ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) AS rowcount FROM APPLICATIONS;" );
+	      ResultSet rs = stmt.executeQuery( "SELECT * FROM APPLICATIONSS WHERE ID = (SELECT MAX(ID) FROM APPLICATIONS);" );
 	      rs.next();
-	      count = rs.getInt("rowcount") ;
+	      lastAppId = rs.getInt("ID") ;
 	      rs.close() ;
 	      
 	      c.commit();
@@ -119,8 +119,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	      System.exit(0);
 	    }
 		
-	    return count;
-		
+	    return lastAppId;
 	}
 	
 	@Override
