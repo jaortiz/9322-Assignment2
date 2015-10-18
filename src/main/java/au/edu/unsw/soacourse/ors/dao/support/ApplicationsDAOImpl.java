@@ -28,6 +28,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	                   " JOBID					INTEGER		NOT NULL," +
 	                   " FIRSTNAME  			TEXT, " + 
 	                   " LASTNAME				TEXT, " + 
+	                   " DRIVERSLICENSE			INTEGER, " +
 	                   " EMAIL					TEXT, " + 
 	                   " PHONENUMBER			TEXT, " +
 	                   " COVERLETTER			TEXT, " + 
@@ -41,6 +42,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
                   " JOBID					INTEGER		NOT NULL," +
                   " FIRSTNAME  			TEXT, " + 
                   " LASTNAME				TEXT, " + 
+                  " DRIVERSLICENSE			INTEGER, " +			
                   " EMAIL					TEXT, " + 
                   " PHONENUMBER			TEXT, " +
                   " COVERLETTER			TEXT, " + 
@@ -68,16 +70,17 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 		    System.out.println("Opened database successfully");
 		    
 		    stmt = c.prepareStatement("INSERT INTO APPLICATIONS (JOBID, FIRSTNAME, " +
-			    	"LASTNAME, EMAIL, PHONENUMBER, COVERLETTER, RESUME, STATUS) " +
-			    	"VALUES (?,?,?,?,?,?,?,?);"); 
+			    	"LASTNAME, DRIVERSLICENSE, EMAIL, PHONENUMBER, COVERLETTER, RESUME, STATUS) " +
+			    	"VALUES (?,?,?,?,?,?,?,?,?);"); 
 		    stmt.setInt(1, application.getJobId());
 		    stmt.setString(2, application.getFirstName());
 		    stmt.setString(3, application.getLastName());
-		    stmt.setString(4, application.getEmail());
-		    stmt.setString(5, application.getPhoneNumber());
-		    stmt.setString(6, application.getCoverLetter());
-		    stmt.setString(7, application.getResume());
-		    stmt.setString(8, "created");
+		    stmt.setInt(4, application.getDriversLicence());
+		    stmt.setString(5, application.getEmail());
+		    stmt.setString(6, application.getPhoneNumber());
+		    stmt.setString(7, application.getCoverLetter());
+		    stmt.setString(8, application.getResume());
+		    stmt.setString(9, "created");
 		    stmt.executeUpdate();
 		  
 		    c.commit();
@@ -142,6 +145,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	    	application.setJobId(rs.getInt("JOBID"));
 	    	application.setFirstName(rs.getString("FIRSTNAME"));
 	    	application.setLastName(rs.getString("LASTNAME"));
+	    	application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
 	    	application.setEmail(rs.getString("EMAIL"));
 	    	application.setPhoneNumber(rs.getString("PHONENUMBER"));
 	    	application.setCoverLetter(rs.getString("COVERLETTER"));
@@ -185,6 +189,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 			application.setJobId(rs.getInt("JOBID"));
 			application.setFirstName(rs.getString("FIRSTNAME"));
 			application.setLastName(rs.getString("LASTNAME"));
+			application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
 			application.setEmail(rs.getString("EMAIL"));
 			application.setPhoneNumber(rs.getString("PHONENUMBER"));
 			application.setCoverLetter(rs.getString("COVERLETTER"));
@@ -226,6 +231,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 			application.setJobId(rs.getInt("JOBID"));
 			application.setFirstName(rs.getString("FIRSNAME"));
 			application.setLastName(rs.getString("LASTNAME"));
+			application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
 			application.setEmail(rs.getString("EMAIL"));
 			application.setPhoneNumber(rs.getString("PHONENUMBER"));
 			application.setCoverLetter(rs.getString("COVERLETTER"));
@@ -233,17 +239,18 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 			application.setStatus(rs.getString("STATUS"));
 			rs.close();
 		    
-			stmt = c.prepareStatement("INSERT INTO APPLICATIONS (JOBID, FIRSTNAME, " +
-			    	"LASTNAME, EMAIL, PHONENUMBER, COVERLETTER, RESUME, STATUS) " +
-			    	"VALUES (?,?,?,?,?,?,?,?);"); 
+			stmt = c.prepareStatement("INSERT INTO ARCHIVEDAPPLICATIONS (JOBID, FIRSTNAME, " +
+			    	"LASTNAME,DRIVERSLICENSE EMAIL, PHONENUMBER, COVERLETTER, RESUME, STATUS) " +
+			    	"VALUES (?,?,?,?,?,?,?,?,?);"); 
 			stmt.setInt(1, application.getJobId());
 		    stmt.setString(2, application.getFirstName());
 		    stmt.setString(3, application.getLastName());
-		    stmt.setString(4, application.getEmail());
-		    stmt.setString(5, application.getPhoneNumber());
-		    stmt.setString(6, application.getCoverLetter());
-		    stmt.setString(7, application.getResume());
-		    stmt.setString(8, application.getStatus());
+		    stmt.setInt(4, application.getDriversLicence());
+		    stmt.setString(5, application.getEmail());
+		    stmt.setString(6, application.getPhoneNumber());
+		    stmt.setString(7, application.getCoverLetter());
+		    stmt.setString(8, application.getResume());
+		    stmt.setString(9, application.getStatus());
 		    stmt.executeUpdate();
 			
 			c.commit();
@@ -289,13 +296,14 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 			application.setJobId(rs.getInt("JOBID"));
 			application.setFirstName(rs.getString("FIRSNAME"));
 			application.setLastName(rs.getString("LASTNAME"));
+			application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
 			application.setEmail(rs.getString("EMAIL"));
 			application.setPhoneNumber(rs.getString("PHONENUMBER"));
 			application.setCoverLetter(rs.getString("COVERLETTER"));
 			application.setResume(rs.getString("RESUME"));
 			application.setStatus(rs.getString("STATUS"));
 	          
-	          appList.add(application);
+			appList.add(application);
 	      }
 	      rs.close() ;
 	      stmt.close();
