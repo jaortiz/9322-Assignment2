@@ -9,6 +9,8 @@ public class DAOFactory {
 	
 	private static final String JOBS_DAO = "jobsDAO";
 	private static final String APPLICATIONS_DAO = "applicationsDAO";
+	private static final String REVIEWS_DAO = "reviewsDAO";
+	private static final String REGISTEREDUSERS_DAO = "registeredUsersDAO";
 	private Map daos;
 	
 	private static DAOFactory instance = new DAOFactory();
@@ -16,7 +18,9 @@ public class DAOFactory {
 	private DAOFactory() {
 		daos = new HashMap();
 		daos.put(JOBS_DAO, new JobsDAOImpl());
-		//daos.put(APPLICATIONS_DAO, )
+		daos.put(APPLICATIONS_DAO, new ApplicationsDAOImpl());
+		daos.put(REVIEWS_DAO, new ReviewsDAOImpl());
+		daos.put(REGISTEREDUSERS_DAO, new RegisteredUsersDAOImpl());
 	}
 	
 	/**

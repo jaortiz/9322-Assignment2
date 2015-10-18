@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class RegisteredUser {
 
 	//Login tags
-	private String uId;
+	private int uId;
 	private String password;
 	private String shortKey;
 	
@@ -15,10 +15,11 @@ public class RegisteredUser {
 	private String firstName;
 	private String role;
 	private String department;
-	public String getuId() {
+	
+	public int getuId() {
 		return uId;
 	}
-	public void setuId(String uId) {
+	public void setuId(int uId) {
 		this.uId = uId;
 	}
 	public String getPassword() {
