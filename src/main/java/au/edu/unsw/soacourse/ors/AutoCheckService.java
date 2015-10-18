@@ -1,8 +1,12 @@
 package au.edu.unsw.soacourse.ors;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
@@ -18,7 +22,20 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
+import javax.xml.namespace.QName;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPBody;
+import javax.xml.soap.SOAPBodyElement;
+import javax.xml.soap.SOAPConnection;
+import javax.xml.soap.SOAPConnectionFactory;
+import javax.xml.soap.SOAPElement;
+import javax.xml.soap.SOAPMessage;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
 
+import au.edu.unsw.marketdatautil.MarketDataFault;
+import au.edu.unsw.marketdatautil.MarketDataFaultMsg;
+import au.edu.unsw.marketdatautil.MarketDataFaultType;
 import au.edu.unsw.soacourse.ors.dao.support.ApplicationsDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.AutoCheckDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
@@ -34,6 +51,8 @@ public class AutoCheckService {
 	UriInfo uriInfo;
 	@Context
 	Request request;
+	@Resource    
+	private WebServiceContext wsCtxt;
 	
 	// Runs the autocheck bpel service using the persons details from the application
 	@PUT
@@ -72,7 +91,65 @@ public class AutoCheckService {
 						+ "AutoCheck/" + autoCheckId;
 		}
 	}
+	
+	public String runAutoCheck(Application app) {
+		
+	    MessageContext msgCtxt = wsCtxt.getMessageContext();
+	    HttpServletRequest request =
+	        (HttpServletRequest)msgCtxt.get(MessageContext.SERVLET_REQUEST);
 
+	    String hostName = request.getServerName();
+	    int port = request.getServerPort();
+		String result = null;
+		
+	    try {
+			SOAPConnectionFactory sfc = SOAPConnectionFactory.newInstance();
+			SOAPConnection connection = sfc.createConnection();
+			
+			MessageFactory mf = MessageFactory.newInstance();
+			SOAPMessage sm = mf.createMessage();
+			
+			SOAPBody sb = sm.getSOAPBody();
+			
+			QName bodyName = new QName(" http://validation.soacourse.unsw.edu.au/","PDVCheck");
+			SOAPBodyElement bodyElement = sb.addBodyElement(bodyName);
+			QName driversLicence = new QName("driverslicence");
+			SOAPElement driversLicenceElem = bodyElement.addChildElement(driversLicence);
+			QName name = new QName("name");
+			SOAPElement nameElem = bodyElement.addChildElement(name);
+			QName postCode = new QName("postcode");
+			SOAPElement postCodeElem = bodyElement.addChildElement(postCode);
+			
+			driversLicenceElem.addTextNode(Integer.toString(app.getDriversLicence()));
+			nameElem.addTextNode(app.getFirstName() + " " + app.getLastName());
+			postCodeElem.addTextNode(Integer.toString(app.getPostCode()));
+			
+			System.out.println("\n Soap Request:\n");
+		    sm.writeTo(System.out);
+		    System.out.println();
+		    										
+		    URL endpoint = new URL("http://" + hostName + ":" + port + "/ValidationService/ValidationServices");
+			SOAPMessage response = connection.call(sm, endpoint);
+			
+			connection.close();
+			response.writeTo(System.out);
+			System.out.println();
+			
+			SOAPBody respBody = response.getSOAPBody();
+			
+			System.out.println(respBody.toString());
+			
+			
+			result = respBody.getFirstChild().getFirstChild().getTextContent();
+
+		} catch (Exception e1) {
+			e1.printStackTrace();
+			System.out.println("Exception in the soap message");
+		}
+	    
+		return result;
+	}
+	
 	@GET
 	@Path("{autoCheckId}")
 	@Produces(MediaType.APPLICATION_JSON)
