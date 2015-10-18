@@ -13,6 +13,7 @@ public class Application {
 	private int driversLicence;
 	private String email;
 	private String phoneNumber;
+	private int postcode;
 	
 	//In practise would be a file but spec says just use text
 	private String coverLetter;
@@ -61,6 +62,13 @@ public class Application {
 	}
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+	
+	public int getPostcode() {
+		return postcode;
+	}
+	public void setPostcode(int postcode) {
+		this.postcode = postcode;
 	}
 	public String getCoverLetter() {
 		return coverLetter;
