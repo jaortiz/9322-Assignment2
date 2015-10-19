@@ -107,11 +107,13 @@ public class ApplicationService {
 	public void assignApplication(@PathParam("appID") int appID, String team) {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
 		
-		String assignedTeam = appsDAO.getAssignedAppByID(appID).getDepartment();
-		if (assignedTeam == null && team != null) {
-			appsDAO.assignApplication(appID, team);
-		} else if(assignedTeam != team && team != null){
-			appsDAO.updateAssignedApplication(appID, team);
+		if (appsDAO.getApplicationByID(appID) != null) {
+			String assignedTeam = appsDAO.getAssignedAppByID(appID).getDepartment();
+			if (assignedTeam == null && team != null) {
+				appsDAO.assignApplication(appID, team);
+			} else if(assignedTeam != team && team != null){
+				appsDAO.updateAssignedApplication(appID, team);
+			}
 		}
 	}
 	
