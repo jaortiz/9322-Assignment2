@@ -22,6 +22,7 @@ import javax.ws.rs.core.UriInfo;
 
 import au.edu.unsw.soacourse.ors.dao.support.ApplicationsDAOImpl;
 import au.edu.unsw.soacourse.ors.model.Application;
+import au.edu.unsw.soacourse.ors.model.AssignedApplication;
 
 
 @Path("/applications")
@@ -98,5 +99,37 @@ public class ApplicationService {
 		updatedApp = appsDAO.updateApplicationByID(appToUpdate);
 		
 		return updatedApp;
+	}
+	
+	@PUT
+	@Path("assignApplication/{appID}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	public void assignApplication(@PathParam("appID") int appID, String team) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		
+		String assignedTeam = appsDAO.getAssignedAppByID(appID).getDepartment();
+		if (assignedTeam == null && team != null) {
+			appsDAO.assignApplication(appID, team);
+		} else if(assignedTeam != team && team != null){
+			appsDAO.updateAssignedApplication(appID, team);
+		}
+	}
+	
+	@GET
+	@Path("assignedApplicationByTeam/{team}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public List<AssignedApplication> getAssignedApplicationsByTeam(@PathParam("team") String team) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		
+		return appsDAO.getAppIdByAssignedTeam(team);
+	}
+	
+	@GET
+	@Path("assignedApplication/{appId}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public AssignedApplication getAssignedApplicationsById(@PathParam("appId") int appId) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		
+		return appsDAO.getAssignedAppByID(appId);
 	}
 }

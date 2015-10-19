@@ -95,6 +95,12 @@ public class SetUpDAOImpl {
 	      stmt.executeUpdate(sql);
 	      System.out.println("Archived applications Table created successfully");
 	      
+	      sql = "CREATE TABLE IF NOT EXISTS ASSIGNEDAPPLICATIONS " +
+		             "(APPID INTEGER PRIMARY KEY	UNIQUE NOT NULL," +
+		             " DEPARTMENT					TEXT		NOT NULL,"; 
+	      stmt.executeUpdate(sql);
+	      System.out.println("Assigned applications Table created successfully");
+	      
 	      sql = "CREATE TABLE IF NOT EXISTS AUTOCHECK " +
                   "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
                   " APPID					INTEGER UNIQUE NOT NULL," +

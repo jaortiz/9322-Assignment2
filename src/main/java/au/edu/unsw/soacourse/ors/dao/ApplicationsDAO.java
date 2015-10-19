@@ -71,4 +71,16 @@ public interface ApplicationsDAO {
 	 * @return
 	 */
 	List<Application> getAllApplicationsByJobID(int jobID);
+
+
+	void assignApplication(int appId, String department);
+
+
+	AssignedApplication getAssignedAppByID(int appID);
+
+
+	List<AssignedApplication> getAppIdByAssignedTeam(String team);
+
+
+	void updateAssignedApplication(int appId, String department);
 }

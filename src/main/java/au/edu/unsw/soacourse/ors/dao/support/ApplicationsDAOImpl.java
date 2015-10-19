@@ -8,8 +8,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.expression.spel.ast.Assign;
+
 import au.edu.unsw.soacourse.ors.dao.*;
 import au.edu.unsw.soacourse.ors.model.Application;
+import au.edu.unsw.soacourse.ors.model.AssignedApplication;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
 
 public class ApplicationsDAOImpl implements ApplicationsDAO {
@@ -97,7 +100,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	    System.out.println("Records created successfully");
 	    return lastApplication();
 	}
-
+	
 	public int lastApplication() {
 		Connection c = null;
 		Statement stmt = null;
@@ -460,6 +463,127 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	      System.exit(0);
 	    }
 		
+	    return appList;
+	}
+	
+	@Override
+	public void assignApplication(int appId, String department) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("INSERT INTO ASSIGNEDAPPLICATIONS (APPID, DEPARTMENT) " +
+			    	"VALUES (?,?);"); 
+		    stmt.setInt(1, appId);
+		    stmt.setString(2, department);
+		    stmt.executeUpdate();
+		  
+		    c.commit();
+		    
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	}
+	
+	@Override
+	public void updateAssignedApplication(int appId, String department) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("UPDATE ASSIGNEDAPPLICATIONS"
+		    		+ " SET DEPARTMENT = ? " +
+			    	"WHERE APPID = ?;"); 
+		    stmt.setString(1, department);
+		    stmt.setInt(2, appId);
+		    stmt.executeUpdate();
+		  
+		    c.commit();
+		    
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	}
+
+	@Override
+	public AssignedApplication getAssignedAppByID(int appID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		AssignedApplication app = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM ASSIGNEDAPPLICATIONS WHERE APPID = ? "); 
+		    stmt.setInt(1, appID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    if(rs.next()) {
+		    	app = new AssignedApplication();
+			    app.setDepartment(rs.getString("DEPARTMENT"));
+			    app.setAppId(rs.getInt("APPID"));
+		    }
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return app;
+	}
+	
+	@Override
+	public List<AssignedApplication> getAppIdByAssignedTeam(String team) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		List<AssignedApplication> appList = new ArrayList<AssignedApplication>();
+		AssignedApplication app = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM ASSIGNEDAPPLICATIONS WHERE DEPARTMENT = ? "); 
+		    stmt.setString(1, team);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    while(rs.next()) {
+		    	app = new AssignedApplication();
+			    app.setAppId(rs.getInt("APPID"));
+			    app.setDepartment(rs.getString("DEPARTMENT"));
+			    appList.add(app);
+		    }
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
 	    return appList;
 	}
 
