@@ -99,9 +99,10 @@ public class JobsDAOImpl implements JobsDAO {
 	      
 	      stmt = c.createStatement();
 	      ResultSet rs = stmt.executeQuery( "SELECT * FROM JOBPOSTINGS WHERE ID = (SELECT MAX(ID) FROM JOBPOSTINGS);" );
-	      rs.next();
-	      lastJobId = rs.getInt("ID") ;
-	      rs.close() ;
+	      if(rs.next()) {
+	    	  lastJobId = rs.getInt("ID") ;
+	      }
+    	  rs.close() ;
 	      
 	      c.commit();
 	      c.close();
@@ -126,9 +127,10 @@ public class JobsDAOImpl implements JobsDAO {
 	      
 	      stmt = c.createStatement();
 	      ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) AS rowcount FROM JOBPOSTINGS;" );
-	      rs.next();
-	      count = rs.getInt("rowcount") ;
-	      rs.close() ;
+	      if (rs.next()) {
+	    	  count = rs.getInt("rowcount") ;
+	      }
+    	  rs.close() ;
 	      
 	      c.commit();
 	      c.close();
@@ -156,18 +158,17 @@ public class JobsDAOImpl implements JobsDAO {
 		    stmt.setInt(1, jobID);
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    job = new JobPosting();
-			job.setJobId(rs.getInt("ID"));
-			job.setJobName(rs.getString("JOBNAME"));
-			job.setClosingDate(rs.getString("CLOSEDATE"));
-			job.setSalary(rs.getInt("SALARY"));
-			job.setPosition(rs.getString("POSITIONTYPE"));
-			job.setLocation(rs.getString("LOCATION"));
-			job.setDescription(rs.getString("DESCRIPTION"));
-			job.setStatus(rs.getString("STATUS"));
-			
-			
+		    if(rs.next()) {
+			    job = new JobPosting();
+				job.setJobId(rs.getInt("ID"));
+				job.setJobName(rs.getString("JOBNAME"));
+				job.setClosingDate(rs.getString("CLOSEDATE"));
+				job.setSalary(rs.getInt("SALARY"));
+				job.setPosition(rs.getString("POSITIONTYPE"));
+				job.setLocation(rs.getString("LOCATION"));
+				job.setDescription(rs.getString("DESCRIPTION"));
+				job.setStatus(rs.getString("STATUS"));
+		    }			
 		    
 		    rs.close();
 		    stmt.close();
@@ -272,18 +273,17 @@ public class JobsDAOImpl implements JobsDAO {
 		    stmt.setInt(1, job.getJobId());
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    job = new JobPosting();
-			job.setJobId(rs.getInt("ID"));
-			job.setJobName(rs.getString("JOBNAME"));
-			job.setClosingDate(rs.getString("CLOSEDATE"));
-			job.setSalary(rs.getInt("SALARY"));
-			job.setPosition(rs.getString("POSITIONTYPE"));
-			job.setLocation(rs.getString("LOCATION"));
-			job.setDescription(rs.getString("DESCRIPTION"));
-			job.setStatus(rs.getString("STATUS"));
-			
-			
+		    if (rs.next()){
+			    job = new JobPosting();
+				job.setJobId(rs.getInt("ID"));
+				job.setJobName(rs.getString("JOBNAME"));
+				job.setClosingDate(rs.getString("CLOSEDATE"));
+				job.setSalary(rs.getInt("SALARY"));
+				job.setPosition(rs.getString("POSITIONTYPE"));
+				job.setLocation(rs.getString("LOCATION"));
+				job.setDescription(rs.getString("DESCRIPTION"));
+				job.setStatus(rs.getString("STATUS"));
+		    }
 		    
 		    rs.close();
 		    stmt.close();
@@ -369,16 +369,17 @@ public class JobsDAOImpl implements JobsDAO {
 		    stmt.setInt(1, jobID);
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    job = new JobPosting();
-			job.setJobId(rs.getInt("ID"));
-			job.setJobName(rs.getString("JOBNAME"));
-			job.setClosingDate(rs.getString("CLOSEDATE"));
-			job.setSalary(rs.getInt("SALARY"));
-			job.setPosition(rs.getString("POSITIONTYPE"));
-			job.setLocation(rs.getString("LOCATION"));
-			job.setDescription(rs.getString("DESCRIPTION"));
-			job.setStatus(rs.getString("STATUS"));
+		    if (rs.next()){
+			    job = new JobPosting();
+				job.setJobId(rs.getInt("ID"));
+				job.setJobName(rs.getString("JOBNAME"));
+				job.setClosingDate(rs.getString("CLOSEDATE"));
+				job.setSalary(rs.getInt("SALARY"));
+				job.setPosition(rs.getString("POSITIONTYPE"));
+				job.setLocation(rs.getString("LOCATION"));
+				job.setDescription(rs.getString("DESCRIPTION"));
+				job.setStatus(rs.getString("STATUS"));
+		    }
 			rs.close();
 		    
 			stmt = c.prepareStatement("INSERT INTO ARCHIVEDJOBS (JOBNAME, CLOSEDATE, " +
@@ -425,19 +426,18 @@ public class JobsDAOImpl implements JobsDAO {
 		    stmt.setInt(1, jobID);
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    job = new JobPosting();
-			job.setJobId(rs.getInt("ID"));
-			job.setJobName(rs.getString("JOBNAME"));
-			job.setClosingDate(rs.getString("CLOSEDATE"));
-			job.setSalary(rs.getInt("SALARY"));
-			job.setPosition(rs.getString("POSITIONTYPE"));
-			job.setLocation(rs.getString("LOCATION"));
-			job.setDescription(rs.getString("DESCRIPTION"));
-			job.setStatus(rs.getString("STATUS"));
+		    if(rs.next()) {
+			    job = new JobPosting();
+				job.setJobId(rs.getInt("ID"));
+				job.setJobName(rs.getString("JOBNAME"));
+				job.setClosingDate(rs.getString("CLOSEDATE"));
+				job.setSalary(rs.getInt("SALARY"));
+				job.setPosition(rs.getString("POSITIONTYPE"));
+				job.setLocation(rs.getString("LOCATION"));
+				job.setDescription(rs.getString("DESCRIPTION"));
+				job.setStatus(rs.getString("STATUS"));
+		    }			
 			
-			
-		    
 		    rs.close();
 		    stmt.close();
 		    c.close();

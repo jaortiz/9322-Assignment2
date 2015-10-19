@@ -88,14 +88,14 @@ public class ReviewsDAOImpl implements ReviewDAO{
 		    stmt.setInt(1, rID);
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    
-		    review = new Review();
-		    review.setReviewId(rs.getInt("ID"));
-		    review.setAppId(rs.getInt("APPID"));
-		    review.setuId(rs.getString("UID"));
-		    review.setComments(rs.getString("COMMENTS"));;
-		    review.setDecision(rs.getString("DECISION"));
+		    if (rs.next()) {
+			    review = new Review();
+			    review.setReviewId(rs.getInt("ID"));
+			    review.setAppId(rs.getInt("APPID"));
+			    review.setuId(rs.getString("UID"));
+			    review.setComments(rs.getString("COMMENTS"));;
+			    review.setDecision(rs.getString("DECISION"));
+		    }
 		    
 		    rs.close();
 		    stmt.close();

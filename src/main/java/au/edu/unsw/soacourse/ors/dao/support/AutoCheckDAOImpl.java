@@ -78,8 +78,9 @@ public class AutoCheckDAOImpl implements AutoCheckDAO {
 	      
 	      stmt = c.createStatement();
 	      ResultSet rs = stmt.executeQuery( "SELECT * FROM AUTOCHECK WHERE ID = (SELECT MAX(ID) FROM AUTOCHECK);" );
-	      rs.next();
-	      lastAutoCheckId = rs.getInt("ID") ;
+	      if(rs.next()) {
+	    	  lastAutoCheckId = rs.getInt("ID") ;
+	      }
 	      rs.close() ;
 	      
 	      c.commit();
@@ -105,8 +106,9 @@ public class AutoCheckDAOImpl implements AutoCheckDAO {
 	      
 	      stmt = c.createStatement();
 	      ResultSet rs = stmt.executeQuery( "SELECT COUNT(*) AS rowcount FROM AUTOCHECK;" );
-	      rs.next();
-	      count = rs.getInt("rowcount") ;
+	      if (rs.next()) {
+	    	  count = rs.getInt("rowcount") ;
+	      }
 	      rs.close() ;
 	      
 	      c.commit();
