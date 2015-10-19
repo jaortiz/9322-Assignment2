@@ -60,7 +60,7 @@ public class AutoCheckService {
 		
 		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
 		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
-		if (user != null && user.getRole().equals("reviewer")) {
+		if (user != null && user.getRole().equals("manager")) {
 			int appId = Integer.parseInt(appIdString);
 	
 			AutoCheckDAOImpl autoCheckDAO = new AutoCheckDAOImpl();		
