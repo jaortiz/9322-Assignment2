@@ -97,7 +97,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	    System.out.println("Records created successfully");
 	    return lastApplication();
 	}
-
+	
 	public int lastApplication() {
 		Connection c = null;
 		Statement stmt = null;
@@ -367,6 +367,92 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	    }
 		
 	    return appList;
+	}
+	
+	@Override
+	public void AssignApplication(int appId, String department) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("INSERT INTO ASSIGNEDAPPLICATIONS (APPID, DEPARTMENT) " +
+			    	"VALUES (?,?);"); 
+		    stmt.setInt(1, appId);
+		    stmt.executeUpdate();
+		  
+		    c.commit();
+		    
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	}
+
+	@Override
+	public String getAssignedTeamByID(int appID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		String team = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM ASSIGNEDAPPLICATIONS WHERE APPID = ? "); 
+		    stmt.setInt(1, appID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    if(rs.next()) {
+			    team = rs.getString("DEPARTMENT");
+		    }
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return team;
+	}
+	
+	@Override
+	public int[] getAppIdByAssignedTeam(String team) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		int[] appIdList = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM ASSIGNEDAPPLICATIONS WHERE DEPARTMENT = ? "); 
+		    stmt.setString(1, team);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    for(int i=0; rs.next(); i++) {
+			    appIdList[i] = rs.getInt("APPID");
+		    }
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return appIdList;
 	}
 
 }
