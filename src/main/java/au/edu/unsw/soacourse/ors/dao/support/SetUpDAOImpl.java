@@ -53,6 +53,9 @@ public class SetUpDAOImpl {
 	      stmt.executeUpdate(sql);
 	      System.out.println("Registered Users Table created successfully");
 	      
+	      RegisteredUsersDAOImpl registeredUser = new RegisteredUsersDAOImpl();
+	      registeredUser.populateUsersDB();
+	      
 	      sql = "CREATE TABLE IF NOT EXISTS REVIEWS " +
                   "(ID INTEGER PRIMARY KEY	AUTOINCREMENT NOT NULL," +
                   " APPID           	INTEGER    NOT NULL, " + 

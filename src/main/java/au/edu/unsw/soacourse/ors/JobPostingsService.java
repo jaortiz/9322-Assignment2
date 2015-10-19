@@ -8,6 +8,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -20,7 +21,9 @@ import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 
 import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
+import au.edu.unsw.soacourse.ors.dao.support.RegisteredUsersDAOImpl;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
+import au.edu.unsw.soacourse.ors.model.RegisteredUser;
 /**
  * NEED TO DO:
  * IMPROVE SECURITY OF ALL FUNCTIONS
@@ -49,14 +52,20 @@ public class JobPostingsService {
 	@Path("createJobPosting")
     @Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String newJob(JobPosting newJob) throws IOException {
+	public String newJob(@HeaderParam("ShortKey") String shortkey, JobPosting newJob) throws IOException {
 		
-		JobsDAOImpl jobsDAO = new JobsDAOImpl();
-		
-		int jobId = jobsDAO.createJob(newJob);
-		return "The created job is available at: " 
-				+ uriInfo.getBaseUri().toASCIIString()
-				+ "jobPostings/" + jobId;
+		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
+		if (user != null && user.getRole().equals("manager")) {
+			JobsDAOImpl jobsDAO = new JobsDAOImpl();
+			
+			int jobId = jobsDAO.createJob(newJob);
+			return "The created job is available at: " 
+					+ uriInfo.getBaseUri().toASCIIString()
+					+ "jobPostings/" + jobId;
+		} else {
+			return "Must be a manager to create a job";
+		}
 	}
 	
 	@GET
@@ -85,12 +94,17 @@ public class JobPostingsService {
 	@Path("{jobID}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public JobPosting updateJob(@PathParam("jobID") String idString, JobPosting jobToUpdate) {
-		int jobID = Integer.parseInt(idString);
-		
-		jobToUpdate.setJobId(jobID);
-		JobsDAOImpl jobsDAO = new JobsDAOImpl();
-		JobPosting updatedJob = jobsDAO.updateJobById(jobToUpdate);
+	public JobPosting updateJob(@HeaderParam("ShortKey") String shortkey, @PathParam("jobID") String idString, JobPosting jobToUpdate) {
+		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
+		JobPosting updatedJob = null;
+		if (user != null && user.getRole().equals("manager")) {
+			int jobID = Integer.parseInt(idString);
+			
+			jobToUpdate.setJobId(jobID);
+			JobsDAOImpl jobsDAO = new JobsDAOImpl();
+			updatedJob = jobsDAO.updateJobById(jobToUpdate);
+		}
 		return updatedJob;
 		
 	}
@@ -124,12 +138,16 @@ public class JobPostingsService {
 	
 	@DELETE
 	@Path("deleteJob/{jobid}")
-	public void deleteBook(@PathParam("jobid") String idString) {
-		int jobID = Integer.parseInt(idString);
+	public void deleteBook(@HeaderParam("ShortKey") String shortkey, @PathParam("jobid") String idString) {
 		
-		JobsDAOImpl jobsDAO = new JobsDAOImpl();
-		jobsDAO.archiveJob(jobID);
-		
+		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
+		if (user != null && user.getRole().equals("manager")) {
+			int jobID = Integer.parseInt(idString);
+			
+			JobsDAOImpl jobsDAO = new JobsDAOImpl();
+			jobsDAO.archiveJob(jobID);
+		}		
 	}
 	
 	@GET

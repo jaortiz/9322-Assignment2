@@ -109,7 +109,7 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	      c.setAutoCommit(false);
 	      
 	      stmt = c.createStatement();
-	      ResultSet rs = stmt.executeQuery( "SELECT * FROM APPLICATIONSS WHERE ID = (SELECT MAX(ID) FROM APPLICATIONS);" );
+	      ResultSet rs = stmt.executeQuery( "SELECT * FROM APPLICATIONS WHERE ID = (SELECT MAX(ID) FROM APPLICATIONS);" );
 	      rs.next();
 	      lastAppId = rs.getInt("ID") ;
 	      rs.close() ;

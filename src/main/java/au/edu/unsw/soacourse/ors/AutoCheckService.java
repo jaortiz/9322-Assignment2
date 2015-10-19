@@ -12,6 +12,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -35,10 +36,10 @@ import javax.xml.ws.handler.MessageContext;
 
 import au.edu.unsw.soacourse.ors.dao.support.ApplicationsDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.AutoCheckDAOImpl;
-import au.edu.unsw.soacourse.ors.dao.support.JobsDAOImpl;
+import au.edu.unsw.soacourse.ors.dao.support.RegisteredUsersDAOImpl;
 import au.edu.unsw.soacourse.ors.model.Application;
 import au.edu.unsw.soacourse.ors.model.AutoCheck;
-import au.edu.unsw.soacourse.ors.model.JobPosting;
+import au.edu.unsw.soacourse.ors.model.RegisteredUser;
 
 @Path("/AutoCheck")
 public class AutoCheckService {
@@ -53,10 +54,53 @@ public class AutoCheckService {
 	
 	// Runs the autocheck bpel service using the persons details from the application
 	@PUT
+	@Path("check/{appId}")
+	@Produces(MediaType.TEXT_PLAIN)
+	public String autoCheckApplication(@HeaderParam("ShortKey") String shortkey, @PathParam("appId") String appIdString, @Context HttpServletRequest httpRequest) {
+		
+		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
+		if (user != null && user.getRole().equals("reviewer")) {
+			int appId = Integer.parseInt(appIdString);
+	
+			AutoCheckDAOImpl autoCheckDAO = new AutoCheckDAOImpl();		
+			AutoCheck autocheck = new AutoCheck();
+			ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+			Application app = appsDAO.getApplicationByID(appId);
+			
+			autocheck = autoCheckDAO.getByAppID(appId);
+			
+			if (autocheck != null) {
+				return null;
+			} 
+			//TODO: Run the bpel service with the details here
+			// If app has been checked before return nothing but check  again to update if it has changed
+			// if it hasnt, check it and return 
+			String result = runAutoCheck(app, httpRequest);
+			//Assuming bpel is done now
+			System.out.println(result);
+			autocheck = new AutoCheck();
+			autocheck.setResult(result);
+			autocheck.setAppId(appId);
+			
+			int autoCheckId = autoCheckDAO.createAutoCheck(autocheck);
+			return "The created job is available at: " 
+						+ uriInfo.getBaseUri().toASCIIString()
+						+ "AutoCheck/" + autoCheckId;
+
+		} else {
+			return "Must be a manager to initiate autocheck";
+		}
+	}
+	
+	// Runs the autocheck bpel service using the persons details from the application
+	@PUT
 	@Path("{appId}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.TEXT_PLAIN)
-	public String autoCheckApplication(@PathParam("appId") String appIdString, AutoCheck newAutoCheck) {
+	public String autoCheckApplication(@PathParam("appId") String appIdString,
+			AutoCheck newAutoCheck,
+			HttpServletRequest httpRequest) {
 		int appId = Integer.parseInt(appIdString);
 
 		AutoCheckDAOImpl autoCheckDAO = new AutoCheckDAOImpl();		
@@ -75,9 +119,9 @@ public class AutoCheckService {
 			//TODO: Run the bpel service with the details here
 			// If app has been checked before return nothing but check  again to update if it has changed
 			// if it hasnt, check it and return 
-			String result = "This should be the bpel";
+			String result = runAutoCheck(app, httpRequest);
 			//Assuming bpel is done now
-			
+			System.out.println(result);
 			autocheck = new AutoCheck();
 			autocheck.setResult(result);
 			autocheck.setAppId(appId);
@@ -89,11 +133,7 @@ public class AutoCheckService {
 		}
 	}
 	
-	public String runAutoCheck(Application app) {
-		
-	    MessageContext msgCtxt = wsCtxt.getMessageContext();
-	    HttpServletRequest request =
-	        (HttpServletRequest)msgCtxt.get(MessageContext.SERVLET_REQUEST);
+	public String runAutoCheck(Application app, HttpServletRequest request) {
 
 	    String hostName = request.getServerName();
 	    int port = request.getServerPort();
@@ -104,40 +144,57 @@ public class AutoCheckService {
 			SOAPConnection connection = sfc.createConnection();
 			
 			MessageFactory mf = MessageFactory.newInstance();
-			SOAPMessage sm = mf.createMessage();
+			SOAPMessage sm1 = mf.createMessage();
+			SOAPMessage sm2 = mf.createMessage();
 			
-			SOAPBody sb = sm.getSOAPBody();
+			SOAPBody sb1 = sm1.getSOAPBody();
+			SOAPBody sb2 = sm2.getSOAPBody();
 			
-			QName bodyName = new QName(" http://validation.soacourse.unsw.edu.au/","PDVCheck");
-			SOAPBodyElement bodyElement = sb.addBodyElement(bodyName);
+			QName bodyName1 = new QName("http://validation.soacourse.unsw.edu.au","PDVCheck", "tns");
+			SOAPBodyElement bodyElement1 = sb1.addBodyElement(bodyName1);
 			QName driversLicence = new QName("driverslicence");
-			SOAPElement driversLicenceElem = bodyElement.addChildElement(driversLicence);
-			QName name = new QName("name");
-			SOAPElement nameElem = bodyElement.addChildElement(name);
-			QName postCode = new QName("postcode");
-			SOAPElement postCodeElem = bodyElement.addChildElement(postCode);
+			SOAPElement driversLicenceElem1 = bodyElement1.addChildElement(driversLicence);
+			driversLicenceElem1.removeNamespaceDeclaration("tns");
 			
-			driversLicenceElem.addTextNode(Integer.toString(app.getDriversLicence()));
+			QName bodyName2 = new QName("http://validation.soacourse.unsw.edu.au","CRVCheck", "tns");
+			SOAPBodyElement bodyElement2 = sb2.addBodyElement(bodyName2);
+			SOAPElement driversLicenceElem2 = bodyElement2.addChildElement(driversLicence);
+			driversLicenceElem2.removeNamespaceDeclaration("tns");
+			
+			QName name = new QName("name");
+			SOAPElement nameElem = bodyElement1.addChildElement(name);
+			nameElem.removeNamespaceDeclaration("tns");
+			
+			QName postCode = new QName("postcode");
+			SOAPElement postCodeElem = bodyElement1.addChildElement(postCode);
+			postCodeElem.removeNamespaceDeclaration("tns");
+			
+			driversLicenceElem1.addTextNode(Integer.toString(app.getDriversLicence()));
 			nameElem.addTextNode(app.getFirstName() + " " + app.getLastName());
 			postCodeElem.addTextNode(Integer.toString(app.getPostcode()));
 			
+			driversLicenceElem2.addTextNode(Integer.toString(app.getDriversLicence()));
+			
 			System.out.println("\n Soap Request:\n");
-		    sm.writeTo(System.out);
+		    sm1.writeTo(System.out);
 		    System.out.println();
 		    										
 		    URL endpoint = new URL("http://" + hostName + ":" + port + "/ValidationService/ValidationServices");
-			SOAPMessage response = connection.call(sm, endpoint);
+			SOAPMessage response = connection.call(sm1, endpoint);
+			SOAPMessage response2 = connection.call(sm2, endpoint);
 			
 			connection.close();
 			response.writeTo(System.out);
 			System.out.println();
 			
 			SOAPBody respBody = response.getSOAPBody();
+			SOAPBody respBody2 = response2.getSOAPBody();
 			
 			System.out.println(respBody.toString());
 			
 			
-			result = respBody.getFirstChild().getFirstChild().getTextContent();
+			result = respBody.getFirstChild().getFirstChild().getTextContent() + "\n" +
+					respBody2.getFirstChild().getFirstChild().getTextContent();
 
 		} catch (Exception e1) {
 			e1.printStackTrace();

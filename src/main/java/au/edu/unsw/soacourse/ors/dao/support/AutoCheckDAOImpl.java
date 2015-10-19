@@ -134,13 +134,13 @@ public class AutoCheckDAOImpl implements AutoCheckDAO {
 		    stmt = c.prepareStatement("SELECT * FROM AUTOCHECK WHERE ID = ? "); 
 		    stmt.setInt(1, autoCheckId);
 		    ResultSet rs = stmt.executeQuery();
-		    
-		    rs.next();
 		    autoCheck = new AutoCheck();
-			autoCheck.setAutoCheckId(rs.getInt("ID"));
-			autoCheck.setAppId(rs.getInt("APPID"));
-			autoCheck.setResult(rs.getString("RESULTS"));
-		    
+		    if(rs.next()) {
+		    	
+				autoCheck.setAutoCheckId(rs.getInt("ID"));
+				autoCheck.setAppId(rs.getInt("APPID"));
+				autoCheck.setResult(rs.getString("RESULTS"));
+		    }    
 		    rs.close();
 		    stmt.close();
 		    c.close();
@@ -167,12 +167,12 @@ public class AutoCheckDAOImpl implements AutoCheckDAO {
 		    stmt.setInt(1, appId);
 		    ResultSet rs = stmt.executeQuery();
 		    
-		    rs.next();
-		    autoCheck = new AutoCheck();
-			autoCheck.setAutoCheckId(rs.getInt("ID"));
-			autoCheck.setAppId(rs.getInt("APPID"));
-			autoCheck.setResult(rs.getString("RESULTS"));
-		    
+		    if(rs.next()) {
+		    	autoCheck = new AutoCheck();
+		    	autoCheck.setAutoCheckId(rs.getInt("ID"));
+		    	autoCheck.setAppId(rs.getInt("APPID"));
+		    	autoCheck.setResult(rs.getString("RESULTS"));
+		    }
 		    rs.close();
 		    stmt.close();
 		    c.close();
