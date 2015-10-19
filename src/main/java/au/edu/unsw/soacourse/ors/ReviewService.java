@@ -72,4 +72,16 @@ public class ReviewService {
 			
 			return review;
 		}
+		
+		@GET
+		@Path("byappid/{reviewID}")
+		@Produces(MediaType.APPLICATION_JSON)
+		public Review getReviewByAppId(@PathParam("reviewID") String idString) throws IOException {
+			int reviewID = Integer.parseInt(idString);
+			
+			ReviewsDAOImpl reviewDAO = new ReviewsDAOImpl();
+			Review review = reviewDAO.getReviewByAppID(reviewID);
+			
+			return review;
+		}
 }

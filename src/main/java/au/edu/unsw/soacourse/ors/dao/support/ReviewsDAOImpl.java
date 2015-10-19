@@ -108,7 +108,43 @@ public class ReviewsDAOImpl implements ReviewDAO{
 	    System.out.println("Records created successfully");
 	    return review;
 	}
-
+	
+	@Override
+	public Review getReviewByAppID(int appID) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		Review review = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM REVIEWS WHERE APPID = ? "); 
+		    stmt.setInt(1, appID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    if (rs.next()) {
+			    review = new Review();
+			    review.setReviewId(rs.getInt("ID"));
+			    review.setAppId(rs.getInt("APPID"));
+			    review.setuId(rs.getString("UID"));
+			    review.setComments(rs.getString("COMMENTS"));;
+			    review.setDecision(rs.getString("DECISION"));
+		    }
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return review;
+	}
+	
 	@Override
 	public List<Review> getAllReviews() {
 		Connection c = null;

@@ -29,6 +29,9 @@ public interface ReviewDAO {
 	 * @return
 	 */
 	List<Review> getAllReviews();
+
+
+	Review getReviewByAppID(int appID);
 	
 	
 }
