@@ -169,9 +169,103 @@ public class ApplicationsDAOImpl implements ApplicationsDAO {
 	}
 
 	@Override
-	public void updateApplicationByID(int appID, Application application) {
-		// TODO Auto-generated method stub
+	public Application updateApplicationByID(Application updatedApp) {
+		Application application = getApplicationByID(updatedApp.getAppId());
 		
+		if(updatedApp.getFirstName() != null && !updatedApp.getFirstName().equals(application.getFirstName())) {
+			application.setFirstName(updatedApp.getFirstName());
+		}
+		
+		if(updatedApp.getLastName() != null && !updatedApp.getLastName().equals(application.getLastName())) {
+			application.setLastName(updatedApp.getLastName());
+		}
+		
+		if(updatedApp.getDriversLicence() != 0 && updatedApp.getDriversLicence() != application.getDriversLicence()) {
+			application.setDriversLicence(updatedApp.getDriversLicence());
+		}
+		
+		if(updatedApp.getEmail() != null && !updatedApp.getEmail().equals(application.getEmail())) {
+			application.setEmail(updatedApp.getEmail());
+		}
+		
+		if(updatedApp.getPhoneNumber() != null && !updatedApp.getPhoneNumber().equals(application.getPhoneNumber())) {
+			application.setPhoneNumber(updatedApp.getPhoneNumber());
+		}
+		
+		if(updatedApp.getPostcode() != 0 && updatedApp.getPostcode() != application.getPostcode()) {
+			application.setPostcode(updatedApp.getPostcode());
+		}
+		
+		if(updatedApp.getCoverLetter() != null && !updatedApp.getCoverLetter().equals(application.getCoverLetter())) {
+			application.setCoverLetter(updatedApp.getCoverLetter());
+		}
+		
+		if(updatedApp.getResume() != null && !updatedApp.getResume().equals(application.getResume())) {
+			application.setResume(updatedApp.getResume());
+		}
+		
+		
+		if(updatedApp.getStatus() != null && !updatedApp.getStatus().equals(application.getStatus())) {
+			application.setStatus(updatedApp.getStatus());
+		}
+		
+		Connection c = null;
+		PreparedStatement stmt = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("UPDATE APPLICATIONS "
+		    		+ "SET JOBID = ?, FIRSTNAME = ?, LASTNAME = ?, DRIVERSLICENSE = ?, EMAIL = ?, "
+		    		+ "PHONENUMBER = ?, POSTCODE = ?, COVERLETTER = ?, RESUME = ?, STATUS = ?"
+		    		+ "WHERE ID = ? "); 
+		    
+		    stmt.setInt(1, application.getJobId());
+		    stmt.setString(2, application.getFirstName());
+		    stmt.setString(3, application.getLastName());
+		    stmt.setInt(4, application.getDriversLicence());
+		    stmt.setString(5, application.getEmail());
+		    stmt.setString(6, application.getPhoneNumber());
+		    stmt.setInt(7, application.getPostcode());
+		    stmt.setString(8, application.getCoverLetter());
+		    stmt.setString(9, application.getResume());
+		    stmt.setString(10, application.getStatus());
+		    stmt.setInt(11, application.getAppId());
+		     
+		    stmt.executeUpdate();
+		    c.commit();
+		    
+		    stmt = c.prepareStatement("SELECT * FROM APPLICATIONS WHERE ID = ? "); 
+		    stmt.setInt(1, application.getAppId());
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    if (rs.next()){
+			    application = new Application();
+				application.setAppId(rs.getInt("ID"));
+		    	application.setJobId(rs.getInt("JOBID"));
+		    	application.setFirstName(rs.getString("FIRSTNAME"));
+		    	application.setLastName(rs.getString("LASTNAME"));
+		    	application.setDriversLicence(rs.getInt("DRIVERSLICENSE"));
+		    	application.setEmail(rs.getString("EMAIL"));
+		    	application.setPhoneNumber(rs.getString("PHONENUMBER"));
+		    	application.setPostcode(rs.getInt("POSTCODE"));
+		    	application.setCoverLetter(rs.getString("COVERLETTER"));
+		    	application.setResume(rs.getString("RESUME"));
+		    	application.setStatus(rs.getString("STATUS"));
+		    }
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return application;
 	}
 
 	@Override

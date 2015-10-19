@@ -29,7 +29,7 @@ public interface ApplicationsDAO {
 	 * 
 	 * @param appID
 	 */
-	void updateApplicationByID(int appID, Application application);
+	Application updateApplicationByID(Application updatedApp);
 	
 	
 	/**
