@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import au.edu.unsw.soacourse.ors.dao.ReviewDAO;
+import au.edu.unsw.soacourse.ors.model.Application;
 import au.edu.unsw.soacourse.ors.model.JobPosting;
 import au.edu.unsw.soacourse.ors.model.Review;
 
@@ -74,8 +75,38 @@ public class ReviewsDAOImpl implements ReviewDAO{
 	
 	@Override
 	public Review getReviewByID(int rID) {
-		// TODO Auto-generated method stub
-		return null;
+		Connection c = null;
+		PreparedStatement stmt = null;
+		Review review = null;
+	    try {
+	    	Class.forName("org.sqlite.JDBC");
+	    	c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	    	c.setAutoCommit(false);
+		    System.out.println("Opened database successfully");
+		    
+		    stmt = c.prepareStatement("SELECT * FROM REVIEWS WHERE ID = ? "); 
+		    stmt.setInt(1, rID);
+		    ResultSet rs = stmt.executeQuery();
+		    
+		    rs.next();
+		    
+		    review = new Review();
+		    review.setReviewId(rs.getInt("ID"));
+		    review.setAppId(rs.getInt("APPID"));
+		    review.setuId(rs.getString("UID"));
+		    review.setComments(rs.getString("COMMENTS"));;
+		    review.setDecision(rs.getString("DECISION"));
+		    
+		    rs.close();
+		    stmt.close();
+		    c.close();
+	    } catch ( Exception e ) {
+	    	
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+	    System.out.println("Records created successfully");
+	    return review;
 	}
 
 	@Override
