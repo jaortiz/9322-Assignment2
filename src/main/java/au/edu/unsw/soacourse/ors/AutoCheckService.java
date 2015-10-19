@@ -12,6 +12,7 @@ import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
@@ -35,8 +36,10 @@ import javax.xml.ws.handler.MessageContext;
 
 import au.edu.unsw.soacourse.ors.dao.support.ApplicationsDAOImpl;
 import au.edu.unsw.soacourse.ors.dao.support.AutoCheckDAOImpl;
+import au.edu.unsw.soacourse.ors.dao.support.RegisteredUsersDAOImpl;
 import au.edu.unsw.soacourse.ors.model.Application;
 import au.edu.unsw.soacourse.ors.model.AutoCheck;
+import au.edu.unsw.soacourse.ors.model.RegisteredUser;
 
 @Path("/AutoCheck")
 public class AutoCheckService {
@@ -53,33 +56,41 @@ public class AutoCheckService {
 	@PUT
 	@Path("check/{appId}")
 	@Produces(MediaType.TEXT_PLAIN)
-	public String autoCheckApplication(@PathParam("appId") String appIdString, @Context HttpServletRequest httpRequest) {
-		int appId = Integer.parseInt(appIdString);
+	public String autoCheckApplication(@HeaderParam("ShortKey") String shortkey, @PathParam("appId") String appIdString, @Context HttpServletRequest httpRequest) {
+		
+		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = userDAO.getUsersbyShortKey(shortkey);
+		if (user != null && user.getRole().equals("reviewer")) {
+			int appId = Integer.parseInt(appIdString);
+	
+			AutoCheckDAOImpl autoCheckDAO = new AutoCheckDAOImpl();		
+			AutoCheck autocheck = new AutoCheck();
+			ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+			Application app = appsDAO.getApplicationByID(appId);
+			
+			autocheck = autoCheckDAO.getByAppID(appId);
+			
+			if (autocheck != null) {
+				return null;
+			} 
+			//TODO: Run the bpel service with the details here
+			// If app has been checked before return nothing but check  again to update if it has changed
+			// if it hasnt, check it and return 
+			String result = runAutoCheck(app, httpRequest);
+			//Assuming bpel is done now
+			System.out.println(result);
+			autocheck = new AutoCheck();
+			autocheck.setResult(result);
+			autocheck.setAppId(appId);
+			
+			int autoCheckId = autoCheckDAO.createAutoCheck(autocheck);
+			return "The created job is available at: " 
+						+ uriInfo.getBaseUri().toASCIIString()
+						+ "AutoCheck/" + autoCheckId;
 
-		AutoCheckDAOImpl autoCheckDAO = new AutoCheckDAOImpl();		
-		AutoCheck autocheck = new AutoCheck();
-		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
-		Application app = appsDAO.getApplicationByID(appId);
-		
-		autocheck = autoCheckDAO.getByAppID(appId);
-		
-		if (autocheck != null) {
-			return null;
-		} 
-		//TODO: Run the bpel service with the details here
-		// If app has been checked before return nothing but check  again to update if it has changed
-		// if it hasnt, check it and return 
-		String result = runAutoCheck(app, httpRequest);
-		//Assuming bpel is done now
-		System.out.println(result);
-		autocheck = new AutoCheck();
-		autocheck.setResult(result);
-		autocheck.setAppId(appId);
-		
-		int autoCheckId = autoCheckDAO.createAutoCheck(autocheck);
-		return "The created job is available at: " 
-					+ uriInfo.getBaseUri().toASCIIString()
-					+ "AutoCheck/" + autoCheckId;
+		} else {
+			return "Must be a manager to initiate autocheck";
+		}
 	}
 	
 	// Runs the autocheck bpel service using the persons details from the application
