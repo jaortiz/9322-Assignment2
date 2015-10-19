@@ -8,6 +8,7 @@ import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
@@ -47,6 +48,15 @@ public class RegisteredUserService {
 		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
 		boolean verified = regUsersDAO.checkLogin(uid, password);
 		return Response.ok().entity(verified).build();
+	}
+	
+	@GET
+	@Path("{uid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public RegisteredUser viewUserByID(@PathParam("uid")String uid) {
+		RegisteredUsersDAOImpl regUsersDAO = new RegisteredUsersDAOImpl();
+		RegisteredUser user = regUsersDAO.getUserByID(uid);
+		return user;
 	}
 	
 	//DELETE LATER

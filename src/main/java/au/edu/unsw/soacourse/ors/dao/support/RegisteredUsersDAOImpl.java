@@ -287,4 +287,44 @@ public class RegisteredUsersDAOImpl implements RegisteredUsersDAO {
 	    }
 	    return verified;
 	}
+
+
+
+	@Override
+	public RegisteredUser getUserByID(String uid) {
+		Connection c = null;
+		PreparedStatement stmt = null;
+		RegisteredUser user = null;
+		try {
+	      Class.forName("org.sqlite.JDBC");
+	      c = DriverManager.getConnection("jdbc:sqlite:rest.db");
+	      c.setAutoCommit(false);
+	     
+	      
+	      stmt = c.prepareStatement("SELECT * FROM REGISTEREDUSERS WHERE UID = ?"); 
+	      stmt.setString(1, uid );	
+		  ResultSet rs = stmt.executeQuery();
+	      
+	      if(rs.next() ){
+	    	  user = new RegisteredUser();
+	    	  user.setuId(rs.getString("UID"));
+	    	  user.setPassword(rs.getString("PASSWORD"));
+	    	  user.setShortKey(rs.getString("SHORTKEY"));
+	    	  user.setLastName(rs.getString("LASTNAME"));
+	    	  user.setFirstName(rs.getString("FIRSTNAME"));
+	    	  user.setRole(rs.getString("ROLE"));
+	    	  user.setDepartment(rs.getString("DEPARTMENT"));
+	    	  
+	      }
+	      rs.close() ;
+	      stmt.close();
+	      c.close();
+
+	    } catch ( Exception e ) {
+	      System.err.println( e.getClass().getName() + ": " + e.getMessage() );
+	      System.exit(0);
+	    }
+		
+	    return user;
+	}
 }

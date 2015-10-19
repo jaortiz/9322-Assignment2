@@ -13,4 +13,6 @@ public interface RegisteredUsersDAO {
 	boolean checkLogin(String uid, String password);
 
 	RegisteredUser getUsersbyShortKey(String shortKey);
+	
+	RegisteredUser getUserByID(String uid);
 }
