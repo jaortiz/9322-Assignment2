@@ -9,7 +9,9 @@ import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
@@ -82,5 +84,19 @@ public class ApplicationService {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
 		appsDAO.archiveApplication(appID);
 		return Response.ok().build();
+	}
+	
+	@PUT
+	@Path("{appID}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Application updateApplicationByID(@PathParam("appID") int appID, Application appToUpdate) {
+		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
+		Application updatedApp = null;
+		
+		appToUpdate.setAppId(appID);
+		updatedApp = appsDAO.updateApplicationByID(appToUpdate);
+		
+		return updatedApp;
 	}
 }
