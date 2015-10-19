@@ -63,10 +63,10 @@ public class ApplicationService {
 	@GET
 	@Path("viewByID")
 	@Produces(MediaType.APPLICATION_JSON) 
-	public Response getApplicationbyID(@QueryParam("appID") int appID) {
+	public Application getApplicationbyID(@QueryParam("appID") int appID) {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
 		Application app = appsDAO.getApplicationByID(appID);
-		return Response.ok().entity(app).build();
+		return app;
 		
 	}
 	
