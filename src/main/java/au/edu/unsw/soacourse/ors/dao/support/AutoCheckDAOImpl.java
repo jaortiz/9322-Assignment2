@@ -133,7 +133,7 @@ public class AutoCheckDAOImpl implements AutoCheckDAO {
 	    	c.setAutoCommit(false);
 		    System.out.println("Opened database successfully");
 		    
-		    stmt = c.prepareStatement("SELECT * FROM AUTOCHECK WHERE ID = ? "); 
+		    stmt = c.prepareStatement("SELECT * FROM AUTOCHECK WHERE APPID = ? "); 
 		    stmt.setInt(1, autoCheckId);
 		    ResultSet rs = stmt.executeQuery();
 		    autoCheck = new AutoCheck();

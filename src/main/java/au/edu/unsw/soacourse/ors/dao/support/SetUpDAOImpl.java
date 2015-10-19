@@ -97,7 +97,7 @@ public class SetUpDAOImpl {
 	      
 	      sql = "CREATE TABLE IF NOT EXISTS ASSIGNEDAPPLICATIONS " +
 		             "(APPID INTEGER PRIMARY KEY	UNIQUE NOT NULL," +
-		             " DEPARTMENT					TEXT		NOT NULL,"; 
+		             " DEPARTMENT					TEXT		NOT NULL)"; 
 	      stmt.executeUpdate(sql);
 	      System.out.println("Assigned applications Table created successfully");
 	      
