@@ -108,10 +108,10 @@ public class ApplicationService {
 		ApplicationsDAOImpl appsDAO = new ApplicationsDAOImpl();
 		
 		if (appsDAO.getApplicationByID(appID) != null) {
-			String assignedTeam = appsDAO.getAssignedAppByID(appID).getDepartment();
-			if (assignedTeam == null && team != null) {
+			AssignedApplication app = appsDAO.getAssignedAppByID(appID);
+			if(app == null) {
 				appsDAO.assignApplication(appID, team);
-			} else if(assignedTeam != team && team != null){
+			} else {
 				appsDAO.updateAssignedApplication(appID, team);
 			}
 		}
