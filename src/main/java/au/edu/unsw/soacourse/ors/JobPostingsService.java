@@ -51,7 +51,7 @@ public class JobPostingsService {
 	@POST
 	@Path("createJobPosting")
     @Consumes(MediaType.APPLICATION_JSON)
-	@Produces(MediaType.TEXT_PLAIN)
+	//@Produces(MediaType.TEXT_PLAIN)
 	public String newJob(@HeaderParam("ShortKey") String shortkey, JobPosting newJob) throws IOException {
 		
 		RegisteredUsersDAOImpl userDAO = new RegisteredUsersDAOImpl();
